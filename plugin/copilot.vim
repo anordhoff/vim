@@ -1,3 +1,9 @@
+if !exists('g:workstation')
+  finish
+endif
+
+packadd copilot
+
 " accept the current suggestion with ctrl-y
 let g:copilot_no_tab_map = v:true
 inoremap <silent><expr> <c-y> pumvisible() ? "\<c-y>" : copilot#Accept()

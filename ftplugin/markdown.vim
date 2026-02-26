@@ -1,3 +1,8 @@
+if !exists('g:workstation')
+  finish
+endif
+
+" lazy load markdown-preview
 if !exists("g:loaded_markdown_preview")
   packadd markdown-preview
   let g:loaded_markdown_preview = 1

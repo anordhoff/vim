@@ -1,3 +1,7 @@
+if !exists('g:workstation')
+  finish
+endif
+
 let s:options = #{
   \   popupBorder: v:true,
   \   showDiagWithSign: v:false,
@@ -35,6 +39,5 @@ augroup lsp_attach
   autocmd User LspAttached inoremap <silent> <c-s> :LspShowSignature<cr>
 augroup END 
 
-if exists('g:extraplugins')
-  packadd lsp
-endif
+" load the lsp plugin after setting up autocommands
+packadd lsp
