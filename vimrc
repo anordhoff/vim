@@ -6,6 +6,7 @@
 " TODO(feat): signature help shown with `K` keymap should handle backslashes (escape chars)
 " TODO(feat): in markdown filetypes, automatically increment numbered list when hitting enter
 " TODO(feat): in markdown filetypes, correct numbered list numbers using `gq`
+" TODO(feat): what benefits do we gain with running vim in --server mode?
 
 " --- settings --- {{{
 
@@ -412,8 +413,8 @@ augroup END
 " --- terminal --- {{{
 
 " set the preferred editor to use the current session's RPC server
-let $VISUAL="vim --servername " .. v:servername .. " --remote"
-let $EDITOR="vim --servername " .. v:servername .. " --remote"
+" let $VISUAL="vim --servername " .. v:servername .. " --remote"
+" let $EDITOR="vim --servername " .. v:servername .. " --remote"
 
 " exit to normal mode using ctrl-[ or escape
 " tnoremap <c-[> <c-\><c-n>
