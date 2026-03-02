@@ -1,4 +1,4 @@
-if !exists('g:workstation')
+if !empty($SSH_TTY)
   finish
 endif
 

@@ -1,5 +1,6 @@
-" vim: foldmethod=marker foldlevel=99
+" vim: foldmethod=marker foldlevel=0
 
+" TODO(bug): check if mergetool works on fedora
 " TODO(feat): Modify yamlls to read job specific patterns from a lua file at ~/jobfiles/lsp/yamlls.lua
 
 " --- settings --- {{{
@@ -102,12 +103,6 @@ augroup completion_config
   autocmd CompleteDone * pclose
   autocmd CompleteDone * setlocal completeopt=menuone,noselect,preview
 augroup END
-
-" prevent filetypes from overwriting formatoptions
-" augroup formatoptions_config
-"   autocmd!
-"   autocmd Filetype * if &ft != "markdown" && &ft != "gitcommit" | setlocal formatoptions=jwcql | endif
-" augroup END
 
 " enable the cursorline on the active window
 augroup cursorline_config
@@ -224,9 +219,6 @@ endfunc
 let s:filescache = []
 autocmd CmdlineEnter : let s:filescache = []
 nnoremap <leader>f :find 
-
-
-
 
 command! -nargs=+ -complete=customlist,<SID>Grep
   \ Grep call <SID>VisitFile()
@@ -349,8 +341,6 @@ function TabLabel(n)
     return 'help'
   elseif filetype == 'netrw'
     return 'netrw'
-  " elseif getbufvar(buflist[winnr - 1], '&buftype') == 'terminal'
-  "   return 'term'
   elseif filetype == 'dirvish'
     return 'dirvish'
   elseif bufname =~ '^fugitive://'
@@ -400,13 +390,13 @@ augroup END
 " --- terminal --- {{{
 
 " start a server so terminal commands can open files in this vim instance
-if empty(v:servername) && has('clientserver')
-  call remote_startserver('VIM')
-endif
-if !empty(v:servername)
-  let $EDITOR = 'vim --servername ' .. v:servername .. ' --remote-wait'
-  let $VISUAL = 'vim --servername ' .. v:servername .. ' --remote-wait'
-endif
+" if empty(v:servername) && has('clientserver')
+"   call remote_startserver('VIM')
+" endif
+" if !empty(v:servername)
+"   let $EDITOR = 'vimx --servername ' .. v:servername .. ' --remote-wait'
+"   let $VISUAL = 'vimx --servername ' .. v:servername .. ' --remote-wait'
+" endif
 
 " open terminal in a horizontal or vertical split
 nnoremap <silent> <m-s> <cmd>call term#Toggle(0)<cr>
