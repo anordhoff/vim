@@ -15,6 +15,11 @@ function markdown#IncrementList()
   return "\<cr>"
 endfunction
 
+" operatorfunc wrapper for markdown#Renumber
+function markdown#RenumberOp(type)
+  call markdown#Renumber(line("'["), line("']"))
+endfunction
+
 " renumber a range of numbered list items sequentially
 function markdown#Renumber(start, end)
   let lnum = a:start
