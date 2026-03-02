@@ -147,7 +147,7 @@ hi DiffText                      cterm=reverse     ctermfg=11       ctermbg=none
 " spelling
 " --------------------------------------
 
-" NOTE: ctermsp doesn't exist: https://github.com/neovim/neovim/issues/9270#issuecomment-442648178
+" TODO: ctermsp doesn't exist in neovim (https://github.com/neovim/neovim/issues/9270#issuecomment-442648178), but can I use ctermsp to highlight the uncercurl in vim?
 hi SpellBad              cterm=undercurl ctermfg=none ctermbg=none guisp=#cc241d
 hi SpellCap              cterm=undercurl ctermfg=none ctermbg=none guisp=#d79921
 hi SpellLocal            cterm=undercurl ctermfg=none ctermbg=none guisp=#98971a

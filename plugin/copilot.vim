@@ -1,7 +1,6 @@
 if !empty($SSH_TTY)
   finish
 endif
-
 packadd copilot
 
 " accept the current suggestion with ctrl-y

@@ -1,9 +1,19 @@
 " vim: foldmethod=marker foldlevel=0
 
-" TODO(bug): check if mergetool works on fedora
-" TODO(bug): check if !exists($SSH_TTY) works with dev containers (docker/podman)
-" TODO(bug): "E947: Job still running in buffer" error when closing vim with a terminal window
-" TODO(feat): Modify yamlls to read job specific patterns from a lua file at ~/jobfiles/lsp/yamlls.lua
+" TODO: confirm if git mergetool works on fedora with `gvim -v` and fugitive. Do the nnoremaps `gh` and `gl` still work?
+" TODO: check if !exists($SSH_TTY) works with dev containers (docker/podman). If not, how can we update the vim config such that opt/ plugins do not load when running vim from within an SSH session or when exec'd into a docker container
+" TODO: QuickScopePrimary and QuickScopeSecondary removes the highlight from Search/IncSearch for the specific character. Can the quick-scope char be set to bold/italic, while preserving Search/IncSearch ctermbg highlight?
+" TODO: "E947: Job still running in buffer" error when closing vim with a terminal window. Is there a better workflow fow closeng vim when a terminal session was created?
+" TODO: in tmux.conf, "bg=color16", "fg=color4", etc are highlighted to their truecolor. However, my terminal emulator does not use the color shown. Disable the inline highlighting of "colorX"
+" TODO: shelcmdflag=-c allows the use of aliases when shelling out from vim's command line, but can also cause command line formatting issues. Is there a workaround that allows me to use aliases, eg :!g status?
+" TODO: Can I use "set showbreak=' .. '" instead of "let &showbreak=' .. '"
+" TODO: `nnoremap <leader>y :let @" = expand("%:p")<cr>` no longer works
+" TODO: yanking visually selected line to the system clipboard with "+y and then pasting in insert mode with <ctrl-shift-v> adds "[27;5;106~" to the end of the pasted text
+" TODO: TermStatusline() should print the command used to launch the terminal (eg python, /bin/zsh, etc), along with current status (running, finished), similar to the default terminal statusline. Perhaps term_gettitle(bufnr('%')) isn't working as expected
+" TODO: vim-dirvish should hide vim swap files (*.swp)
+" TODO: :Lint permanently changes the makeprg to "makeprg=golangci-lint run --show-stats=false --output.text.print-issued-lines=false" when it should reset back to the default "makeprg=make"
+" TODO: why doesn't nnoremap work within ftplugin/netrw.vim? Why do I have to use nmap"
+" TODO: are there are noremaps that would make more sense as maps, and vice versa (any maps that would be safer as noremaps)?
 
 " --- settings --- {{{
 
@@ -93,6 +103,13 @@ set packpath-=~/.config/vim
 set packpath^=~/.config/vim,~/jobfiles/vim
 set packpath+=~/jobfiles/vim/after
 
+" open the quickfix and location list automatically, but don't steal focus
+augroup quickfix_config
+  autocmd!
+  autocmd QuickFixCmdPost [^l]* cwindow | wincmd p
+  autocmd QuickFixCmdPost l*    lwindow | wincmd p
+augroup END
+
 " wrap text in the preview window
 augroup preview_config
   autocmd!
@@ -155,13 +172,6 @@ nnoremap <silent> <leader>z :tabnew %<cr><c-o>
 nnoremap gb :lvimgrep //j %<left><left><left><left>
 nnoremap gp :vimgrep //j **/*<left><left><left><left><left><left><left>
 
-" open the quickfix and location list automatically, but don't steal focus
-augroup quickfix
-    autocmd!
-    autocmd QuickFixCmdPost [^l]* cwindow | wincmd p
-    autocmd QuickFixCmdPost l*    lwindow | wincmd p
-augroup END
-
 " toggle the quickfix list window and maximize window to the width of vim
 nnoremap <silent> <m-q> :call quickfix#ToggleQuickfixlist()<cr>
 
@@ -202,8 +212,9 @@ inoremap <middlemouse> <nop>
 " clear the specified register
 command! -nargs=1 Clear call registers#Clear(<q-args>)
 
+" }}}
+" --- TODO: fuzzy file search and fuzzy grep --- {{{
 
-" TODO: all of the below
 " autocmd CmdlineChanged [:\/\?] call wildtrigger()
 " set wildmode=noselect:lastused,full
 " set wildoptions=pum

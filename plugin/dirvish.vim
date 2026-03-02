@@ -7,6 +7,7 @@ nnoremap <silent> _ <cmd>Dirvish .<cr>
 augroup dirvish_config
   autocmd!
 
+  " TODO: this doesn't work with vim (was written for neovim)
   " use dirvish instead of netrw when opening a directory with vim
   autocmd VimEnter * if exists('#FileExplorer') | exe 'au! FileExplorer *' | endif
 augroup END

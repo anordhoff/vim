@@ -23,16 +23,16 @@ nnoremap <silent><buffer><expr><nowait> gr &cole ? '<cmd>Dirvish %<cr><cmd>setl 
 
 " map `a` to open file at cursor
 nnoremap <silent><buffer> a <cmd>call dirvish#open('edit', 0)<cr>
-vnoremap <silent><buffer> a <cmd>call dirvish#open('edit', 0)<cr>
+xnoremap <silent><buffer> a <cmd>call dirvish#open('edit', 0)<cr>
 
 " map `<c-s>` to open in new split
 nnoremap <silent><buffer> <c-s> <cmd>call dirvish#open('split', 0)<cr>
-vnoremap <silent><buffer> <c-s> <cmd>call dirvish#open('split', 0)<cr>
+xnoremap <silent><buffer> <c-s> <cmd>call dirvish#open('split', 0)<cr>
 
 " map `<c-v>` to open in new vertical split
 nnoremap <silent><buffer> <c-v> <cmd>call dirvish#open('vsplit', 0)<cr>
-vnoremap <silent><buffer> <c-v> <cmd>call dirvish#open('vsplit', 0)<cr>
+xnoremap <silent><buffer> <c-v> <cmd>call dirvish#open('vsplit', 0)<cr>
 
 " map `<c-t>` to open in new tab
 nnoremap <silent><buffer> <c-t> <cmd>call dirvish#open('tabedit', 0)<cr>
-vnoremap <silent><buffer> <c-t> <cmd>call dirvish#open('tabedit', 0)<cr>
+xnoremap <silent><buffer> <c-t> <cmd>call dirvish#open('tabedit', 0)<cr>

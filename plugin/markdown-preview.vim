@@ -1,3 +1,7 @@
+if !empty($SSH_TTY)
+  finish
+endif
+
 " echo preview page URL in command line when opening preview page
 let g:mkdp_echo_preview_url = 1
 
