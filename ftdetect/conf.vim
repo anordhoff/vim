@@ -1,1 +1,1 @@
-autocmd BufRead,BufNewFile *.conf set filetype=conf
+autocmd BufRead,BufNewFile *.conf setfiletype conf

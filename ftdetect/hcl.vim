@@ -1,1 +1,1 @@
-autocmd BufRead,BufNewFile .terraformrc,terraform.rc set filetype=hcl
+autocmd BufRead,BufNewFile .terraformrc,terraform.rc setfiletype hcl

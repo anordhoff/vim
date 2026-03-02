@@ -1,3 +1,5 @@
+let s:clipboard = has('mac') ? 'pbcopy' : 'xclip -selection clipboard'
+
 " commands follow the vim-fugitive naming convention
 command -nargs=* GCreate      call GhPrCreate(<q-args>)
 command -nargs=* GCreateDraft call GhPrCreateDraft(<q-args>)
@@ -11,7 +13,7 @@ endfunction
 " create a Github pull request
 function GhPrCreate(subject)
   if a:subject == ''
-    execute "!gh pr create --fill-first | pbcopy"
+    execute "!gh pr create --fill-first | " .. s:clipboard
   else
     let tmpfile = tempname()
     execute "split " .. tmpfile
@@ -24,7 +26,7 @@ endfunction
 " create a Github draft pull request
 function GhPrCreateDraft(subject)
   if a:subject == ''
-    execute "!gh pr create --draft --fill-first | pbcopy"
+    execute "!gh pr create --draft --fill-first | " .. s:clipboard
   else
     let tmpfile = tempname()
     execute "split " .. tmpfile
@@ -42,10 +44,11 @@ augroup END
 
 " create a Github pull request using the contents of the prbody buffer as the body
 function GhPrCreateWithBody(bodyFile)
+  let s:subject = shellescape(b:gh_pr_subject)
   if b:gh_pr_draft
-    execute "!gh pr create --draft --title '" .. b:gh_pr_subject .. "' --body-file " .. a:bodyFile .. " | pbcopy"
+    execute "!gh pr create --draft --title '" .. s:subject .. "' --body-file " .. a:bodyFile .. " | " .. s:clipboard
   else
-    execute "!gh pr create --title '" .. b:gh_pr_subject .. "' --body-file " .. a:bodyFile .. " | pbcopy"
+    execute "!gh pr create --title '" .. s:subject .. "' --body-file " .. a:bodyFile .. " | " .. s:clipboard
   endif
   call delete(expand(a:bodyFile))
 endfunction

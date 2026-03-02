@@ -56,7 +56,7 @@ hi! link Debug                   Special
 hi Cursor                        cterm=reverse     ctermfg=8        ctermbg=none
 hi! link TermCursor              Cursor
 hi CursorLine                    cterm=none        ctermfg=none     ctermbg=17
-hi! link CursorLIneNr            LineNr
+hi! link CursorLineNr            LineNr
 hi! link CursorColumn            CursorLine
 hi! link ColorColumn             CursorLine
 
@@ -263,8 +263,8 @@ hi DiffRemoved                   cterm=none        ctermfg=1        ctermbg=none
 " --------------------------------------
 " quick-scope
 " --------------------------------------
-hi QuickScopePrimary             cterm=bold
-hi QuickScopeSecondary           cterm=bold,italic
+hi QuickScopePrimary             cterm=bold        ctermfg=none     ctermbg=none
+hi QuickScopeSecondary           cterm=bold,italic ctermfg=none     ctermbg=none
 
 " --------------------------------------
 " sneak

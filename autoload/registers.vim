@@ -3,5 +3,5 @@ function registers#Clear(chars)
     call setreg(char, [])
   endfor
   echo "Successfully cleared registers '" .. a:chars ..
-    \ "'. Execute :wshada! to persist changes"
+    \ "'. Execute :wviminfo! to persist changes"
 endfunction

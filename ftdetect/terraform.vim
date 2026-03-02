@@ -1,1 +1,1 @@
-autocmd BufRead,BufNewFile *.tf set filetype=terraform
+autocmd BufRead,BufNewFile *.tf setfiletype terraform

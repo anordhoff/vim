@@ -1,6 +1,11 @@
 " vim: foldmethod=marker foldlevel=99
 
-" TODO(feat): vim-commentary
+" TODO(bug): sometimes command mode duplicates the line
+" TODO(bug): GCreate switches to terminal view until the command completes, then returns to vim
+" TODO(bug): move plugins from pack/downloads to pack/download
+" TODO(bug): :helptags ALL fails
+
+" TODO(feat): vim-polyglot?
 " TODO(feat): look into built in snippets (default keymap is <tab>, which will conflict with completion)
 " TODO(feat): Modify yamlls to read job specific patterns from a lua file at ~/jobfiles/lsp/yamlls.lua
 " TODO(feat): signature help shown with `K` keymap should handle backslashes (escape chars)
@@ -20,6 +25,7 @@ set smartcase           " ...but not if the search contains a capital letter
 set nowrapscan          " do not wrap searches around the end of the file
 set splitright          " split vertical windows to the right of current window
 set splitbelow          " split horizontal windows below current window
+set hidden              " allow switching between buffers without saving
 " set splitkeep=screen    " keep text on the same line when splitting windows
 set textwidth=120       " wrap lines at 120 characters
 set formatoptions=jwcql " don't auto-wrap text; format comments with gq
@@ -76,10 +82,10 @@ set wildmode=longest:full,full
 set wildignorecase
 
 " list of file patterns to ignore
-set wildignore+=tags,*.tags,.git/**,**/bin/**,**/vendor/**,**/node_modules/**,**/pack/plugins/opt/**,**/pack/plugins/start/**,**/tmux/plugins/**
+set wildignore+=tags,*.tags,.git/**,**/bin/**,**/vendor/**,**/node_modules/**,**/pack/download/opt/**,**/pack/download/start/**,**/tmux/plugins/**
 
 " ignore files and directories listed in .gitignore
-let &wildignore .= gitignore#WildignoreList('.gitignore')
+let &wildignore ..= gitignore#WildignoreList('.gitignore')
 
 " make line wrapping look nicer, but don't wrap by default
 set nowrap
@@ -101,10 +107,11 @@ augroup preview_config
   autocmd WinEnter * if &previewwindow | setlocal wrap | endif
 augroup END
 
-" close the preview window when done completing
+" reset completeopt option after manual completion
 augroup completion_config
   autocmd!
   autocmd CompleteDone * pclose
+  autocmd CompleteDone * setlocal completeopt=menuone,noselect,preview
 augroup END
 
 " prevent filetypes from overwriting formatoptions
@@ -163,8 +170,8 @@ nnoremap gd <c-]>
 nnoremap <silent> <leader>z :tabnew %<cr><c-o>
 
 " grep current buffer or all files in current directory
-nnoremap gb :lvimgrep  //j %<left><left><left><left>
-nnoremap gp :vimgrep  //j **/*<left><left><left><left><left><left><left>
+nnoremap gb :lvimgrep //j %<left><left><left><left>
+nnoremap gp :vimgrep //j **/*<left><left><left><left><left><left><left>
 
 " open the quickfix and location list automatically, but don't steal focus
 augroup quickfix
@@ -190,35 +197,14 @@ nnoremap <leader>y :let @" = expand("%:p")<cr>
 inoremap <expr> <tab> completion#TabComplete(0)
 inoremap <expr> <s-tab> completion#TabComplete(1)
 
-" reset completeopt option after manual completion
-augroup completion_config
-  autocmd!
-  autocmd CompleteDone * pclose
-  autocmd CompleteDone * setlocal completeopt=menuone,noselect,preview
-augroup END
-
 " }}}
 " --- commands --- {{{
 
 " clear the specified register
 command! -nargs=1 Clear call registers#Clear(<q-args>)
 
-" comment a range of lines
-command! -range Comment call comment#CommentRange(<line1>, <line2>)
 
-" duplicate a count of lines
-nnoremap <silent> gzz :<c-u>call comment#DuplicateLines(v:count1)<cr>
-
-" duplicate the highlighted lines
-vnoremap <silent> gz :<c-u>call comment#DuplicateVisual("'<", "'>")<cr>
-
-" duplicate lines that a motion moves over
-nnoremap <silent> gz :set opfunc=comment#DuplicateOperator<cr>g@
-
-" duplicate a range of lines
-command! -range Duplicate call comment#DuplicateRange(<line1>, <line2>)
-
-
+" TODO: all of the below
 " autocmd CmdlineChanged [:\/\?] call wildtrigger()
 " set wildmode=noselect:lastused,full
 " set wildoptions=pum
@@ -278,13 +264,13 @@ set statusline=%!Statusline(g:statusline_winid)
 " assemble the custom statusline for most filetypes
 function Statusline(winid)
   let statusline  = ' ' .. Background(a:winid) " left padding; set status line background color
-  let statusline .= ' [%n]  '                  " buffer number
-  let statusline .= '%f  '                     " filepath
-  let statusline .= '%{NopluginFlag()}'        " noplugin flag
-  let statusline .= '%H%W%R%M'                 " help/preview/read-only/modified flags
-  let statusline .= '%=   %c%V  :  %2l/%L'     " byte index, virtual column number; line number
-  let statusline .= '%{Filetype()}'            " filetype
-  let statusline .= '%* '                      " reset background color; right padding
+  let statusline ..= ' [%n]  '                 " buffer number
+  let statusline ..= '%f  '                    " filepath
+  let statusline ..= '%{NopluginFlag()}'       " noplugin flag
+  let statusline ..= '%H%W%R%M'                " help/preview/read-only/modified flags
+  let statusline ..= '%=   %c%V  :  %2l/%L'    " byte index, virtual column number; line number
+  let statusline ..= '%{Filetype()}'           " filetype
+  let statusline ..= '%* '                     " reset background color; right padding
   return statusline
 endfunction
 
@@ -308,7 +294,6 @@ augroup statusline_config
   autocmd!
   autocmd Filetype qf setlocal statusline=%!QuickfixListStatusline(g:statusline_winid)
   autocmd Filetype netrw setlocal statusline=%!NetrwStatusline(g:statusline_winid)
-  autocmd Filetype copilot-* setlocal statusline=%!CopilotStatusline(g:statusline_winid)
   autocmd TerminalOpen * setlocal statusline=%!TermStatusline(g:statusline_winid)
 augroup END
 
@@ -341,13 +326,13 @@ function TabLine()
   let line = '%#StatusLine#' .. ' ' .. '%#TabLine#'
   for tab in range(tabpagenr('$'))
     if tab + 1 == tabpagenr()
-      let line .= '%#TabLineSel#'
+      let line ..= '%#TabLineSel#'
     else
-      let line .= '%#TabLine#'
+      let line ..= '%#TabLine#'
     endif
-    let line .= ' %{TabLabel(' .. (tab + 1) .. ')} '
+    let line ..= ' %{TabLabel(' .. (tab + 1) .. ')} '
   endfor
-  let line .= '%#TabLineFill#%T' .. '%=%#StatusLine#' .. ' '
+  let line ..= '%#TabLineFill#%T' .. '%=%#StatusLine#' .. ' '
   return line
 endfunction
 

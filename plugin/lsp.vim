@@ -19,24 +19,24 @@ autocmd User LspSetup call LspAddServer(s:servers)
 
 augroup lsp_attach
   autocmd!
-  autocmd User LspAttached nnoremap <silent> gd :LspGotoDefinition<cr>
-  autocmd User LspAttached nnoremap <silent> gD :LspGotoTypeDef<cr>
-  autocmd User LspAttached nnoremap <silent> grr :LspShowReferences<cr>
-  autocmd User LspAttached nnoremap <silent> grn :LspRename<cr>
-  autocmd User LspAttached nnoremap <silent> gra :LspCodeAction<cr>
-  autocmd User LspAttached nnoremap <silent> gri :LspGotoImpl<cr>
-  autocmd User LspAttached nnoremap <silent> grt :LspGotoTypeDef<cr>
-  autocmd User LspAttached nnoremap <silent> gO :LspDocumentSymbol<cr>
-  autocmd User LspAttached nnoremap <silent> gO :LspDocumentSymbol<cr>
-  autocmd User LspAttached nnoremap <silent> K :LspShowSignature<cr>
-  autocmd User LspAttached nnoremap <silent> <leader>F :LspFormat<cr>
+  autocmd User LspAttached nnoremap <silent> gd <cmd>LspGotoDefinition<cr>
+  autocmd User LspAttached nnoremap <silent> gD <cmd>LspGotoTypeDef<cr>
+  autocmd User LspAttached nnoremap <silent> grr <cmd>LspShowReferences<cr>
+  autocmd User LspAttached nnoremap <silent> grn <cmd>LspRename<cr>
+  autocmd User LspAttached nnoremap <silent> gra <cmd>LspCodeAction<cr>
+  autocmd User LspAttached nnoremap <silent> gri <cmd>LspGotoImpl<cr>
+  autocmd User LspAttached nnoremap <silent> grt <cmd>LspGotoTypeDef<cr>
+  autocmd User LspAttached nnoremap <silent> gO <cmd>LspDocumentSymbol<cr>
+  autocmd User LspAttached nnoremap <silent> K <cmd>LspShowSignature<cr>
+  autocmd User LspAttached nnoremap <silent> <leader>F <cmd>LspFormat<cr>
 
-  autocmd User LspAttached nnoremap <silent> [d :LspDiag prev<cr>
-  autocmd User LspAttached nnoremap <silent> ]d :LspDiag next<cr>
-  autocmd User LspAttached nnoremap <silent> <leader>d :LspDiag current<cr>
-  autocmd User LspAttached nnoremap <silent> <leader>D :LspDiag show<cr>
+  autocmd User LspAttached nnoremap <silent> [d <cmd>LspDiag prev<cr>
+  autocmd User LspAttached nnoremap <silent> ]d <cmd>LspDiag next<cr>
+  autocmd User LspAttached nnoremap <silent> <leader>d <cmd>LspDiag current<cr>
+  autocmd User LspAttached nnoremap <silent> <leader>D <cmd>LspDiag show<cr>
 
-  autocmd User LspAttached inoremap <silent> <c-s> :LspShowSignature<cr>
+  " TODO: this doesn't seem to show any signature info
+  autocmd User LspAttached inoremap <silent> <c-s> <cmd>LspShowSignature<cr>
 augroup END 
 
 " load the lsp plugin after setting up autocommands

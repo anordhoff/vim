@@ -1,1 +1,1 @@
-autocmd BufRead,BufNewFile *.tfstate,*.tfstate.backup set filetype=json
+autocmd BufRead,BufNewFile *.tfstate,*.tfstate.backup setfiletype json
