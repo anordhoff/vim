@@ -1,6 +1,8 @@
 " vim: foldmethod=marker foldlevel=0
 
 " TODO(bug): check if mergetool works on fedora
+" TODO(bug): check if !exists($SSH_TTY) works with dev containers (docker/podman)
+" TODO(bug): "E947: Job still running in buffer" error when closing vim with a terminal window
 " TODO(feat): Modify yamlls to read job specific patterns from a lua file at ~/jobfiles/lsp/yamlls.lua
 
 " --- settings --- {{{
