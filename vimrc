@@ -1,7 +1,6 @@
 " vim: foldmethod=marker foldlevel=99
 
 " TODO(feat): Modify yamlls to read job specific patterns from a lua file at ~/jobfiles/lsp/yamlls.lua
-" TODO(feat): what benefits do we gain with running vim in --server mode?
 
 " --- settings --- {{{
 
@@ -400,10 +399,6 @@ augroup END
 " }}}
 " --- terminal --- {{{
 
-" set the preferred editor to use the current session's RPC server
-" let $VISUAL="vim --servername " .. v:servername .. " --remote"
-" let $EDITOR="vim --servername " .. v:servername .. " --remote"
-
 " start a server so terminal commands can open files in this vim instance
 if empty(v:servername) && has('clientserver')
   call remote_startserver('VIM')
@@ -412,10 +407,6 @@ if !empty(v:servername)
   let $EDITOR = 'vim --servername ' .. v:servername .. ' --remote-wait'
   let $VISUAL = 'vim --servername ' .. v:servername .. ' --remote-wait'
 endif
-
-" exit to normal mode using ctrl-[ or escape
-" tnoremap <c-[> <c-\><c-n>
-" tnoremap <esc> <c-\><c-n>
 
 " open terminal in a horizontal or vertical split
 nnoremap <silent> <m-s> <cmd>call term#Toggle(0)<cr>
