@@ -1,16 +1,6 @@
 " vim: foldmethod=marker foldlevel=99
 
-" TODO(bug): sometimes command mode duplicates the line
-" TODO(bug): GCreate switches to terminal view until the command completes, then returns to vim
-" TODO(bug): move plugins from pack/downloads to pack/download
-" TODO(bug): :helptags ALL fails
-
-" TODO(feat): vim-polyglot?
-" TODO(feat): look into built in snippets (default keymap is <tab>, which will conflict with completion)
 " TODO(feat): Modify yamlls to read job specific patterns from a lua file at ~/jobfiles/lsp/yamlls.lua
-" TODO(feat): signature help shown with `K` keymap should handle backslashes (escape chars)
-" TODO(feat): in markdown filetypes, automatically increment numbered list when hitting enter
-" TODO(feat): in markdown filetypes, correct numbered list numbers using `gq`
 " TODO(feat): what benefits do we gain with running vim in --server mode?
 
 " --- settings --- {{{
@@ -26,7 +16,7 @@ set nowrapscan          " do not wrap searches around the end of the file
 set splitright          " split vertical windows to the right of current window
 set splitbelow          " split horizontal windows below current window
 set hidden              " allow switching between buffers without saving
-" set splitkeep=screen    " keep text on the same line when splitting windows
+set laststatus=2        " always show a statusline
 set textwidth=120       " wrap lines at 120 characters
 set formatoptions=jwcql " don't auto-wrap text; format comments with gq
 set scrolloff=2         " keep a minimum of 2 lines above and below the cursor
@@ -34,11 +24,11 @@ set sidescrolloff=8     " keep a minimum of 8 columns before & after the cursor
 set smoothscroll        " scrolling works with screen lines
 set foldmethod=syntax   " fold based on syntax highlighting items
 set foldlevelstart=99   " don't automatically close folds
+set mouse=a             " enable the use of the mouse (for scrolling)
 set mmp=10000           " prevent memory errors when loading large buffers
 set timeoutlen=5000     " make complicated commands more forgiving to type
 set ttimeoutlen=1       " minimal delay for escape key presses
-set shellcmdflag=-ic    " interactive command mode shell (for aliases)
-set laststatus=2        " always show a statusline
+" set shellcmdflag=-ic    " interactive command mode shell (for aliases)
 
 " enable filetype detection and loading of plugin and indent files
 filetype plugin indent on
@@ -133,10 +123,6 @@ augroup cursor_config
   autocmd BufRead * autocmd FileType <buffer> ++once if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exec 'normal! g`"zz' | endif
 augroup END
 
-" scrolling with the mouse or trackpad moves the screen instead of the cursor
-" TODO: option does not exist in vim
-" set mousescroll=ver:1,hor:0
-
 " load custom colorscheme
 colorscheme colorscheme
 
@@ -196,6 +182,23 @@ nnoremap <leader>y :let @" = expand("%:p")<cr>
 " trigger tag/omni completion using <tab>
 inoremap <expr> <tab> completion#TabComplete(0)
 inoremap <expr> <s-tab> completion#TabComplete(1)
+
+" scrolling with the mouse or trackpad moves the screen instead of the cursor
+noremap <scrollwheelup> <c-y>
+noremap <scrollwheeldown> <c-e>
+noremap <scrollwheelleft> <nop>
+noremap <scrollwheelright> <nop>
+
+" disable other mouse actions
+noremap <leftmouse> <nop>
+noremap <rightmouse> <nop>
+noremap <middlemouse> <nop>
+noremap <2-leftmouse> <nop>
+noremap <3-leftmouse> <nop>
+noremap <4-leftmouse> <nop>
+inoremap <leftmouse> <nop>
+inoremap <rightmouse> <nop>
+inoremap <middlemouse> <nop>
 
 " }}}
 " --- commands --- {{{
@@ -401,6 +404,15 @@ augroup END
 " let $VISUAL="vim --servername " .. v:servername .. " --remote"
 " let $EDITOR="vim --servername " .. v:servername .. " --remote"
 
+" start a server so terminal commands can open files in this vim instance
+if empty(v:servername) && has('clientserver')
+  call remote_startserver('VIM')
+endif
+if !empty(v:servername)
+  let $EDITOR = 'vim --servername ' .. v:servername .. ' --remote-wait'
+  let $VISUAL = 'vim --servername ' .. v:servername .. ' --remote-wait'
+endif
+
 " exit to normal mode using ctrl-[ or escape
 " tnoremap <c-[> <c-\><c-n>
 " tnoremap <esc> <c-\><c-n>
@@ -425,7 +437,7 @@ augroup terminal_config
   autocmd!
 
   " prevent the terminal from being added to the buffer list
-  autocmd TerminalOpen * setlocal nobuflisted
+  autocmd TerminalOpen * setlocal nobuflisted fillchars=eob:\  nonumber
 
   " enable terminal toggling
   autocmd TerminalOpen * let g:termbuf = bufnr('%')

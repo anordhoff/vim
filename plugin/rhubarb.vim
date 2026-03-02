@@ -13,7 +13,13 @@ endfunction
 " create a Github pull request
 function GhPrCreate(subject)
   if a:subject == ''
-    execute "!gh pr create --fill-first | " .. s:clipboard
+    let l:output = system('gh pr create --fill-first')
+    if v:shell_error == 0
+      call system(s:clipboard, l:output)
+      echo trim(l:output)
+    else
+      echohl ErrorMsg | echo trim(l:output) | echohl None
+    endif
   else
     let tmpfile = tempname()
     execute "split " .. tmpfile
@@ -26,7 +32,13 @@ endfunction
 " create a Github draft pull request
 function GhPrCreateDraft(subject)
   if a:subject == ''
-    execute "!gh pr create --draft --fill-first | " .. s:clipboard
+    let l:output = system('gh pr create --draft --fill-first')
+    if v:shell_error == 0
+      call system(s:clipboard, l:output)
+      echo trim(l:output)
+    else
+      echohl ErrorMsg | echo trim(l:output) | echohl None
+    endif
   else
     let tmpfile = tempname()
     execute "split " .. tmpfile
@@ -46,9 +58,16 @@ augroup END
 function GhPrCreateWithBody(bodyFile)
   let s:subject = shellescape(b:gh_pr_subject)
   if b:gh_pr_draft
-    execute "!gh pr create --draft --title '" .. s:subject .. "' --body-file " .. a:bodyFile .. " | " .. s:clipboard
+    let l:cmd = "gh pr create --draft --title '" .. s:subject .. "' --body-file " .. a:bodyFile
   else
-    execute "!gh pr create --title '" .. s:subject .. "' --body-file " .. a:bodyFile .. " | " .. s:clipboard
+    let l:cmd = "gh pr create --title '" .. s:subject .. "' --body-file " .. a:bodyFile
   endif
+  let l:output = system(l:cmd)
+  if v:shell_error == 0
+    call system(s:clipboard, l:output)
+    echo trim(l:output)
+  else
+    echohl ErrorMsg | echo trim(l:output) | echohl None
+   endif
   call delete(expand(a:bodyFile))
 endfunction

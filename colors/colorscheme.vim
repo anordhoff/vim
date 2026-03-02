@@ -82,6 +82,8 @@ hi TabLineSel                    cterm=none        ctermfg=6        ctermbg=19
 " StatusLine and StatusLineNC are used for the bookends of the statusline
 hi StatusLine                    cterm=none        ctermfg=7        ctermbg=none
 hi StatusLineNC                  cterm=none        ctermfg=7        ctermbg=none
+hi! link StatusLineTerm          Statusline
+hi! link StatusLineTermNC        StatusLineNC
 hi StatusLineActive              cterm=none        ctermfg=7        ctermbg=22
 hi StatusLineInactive            cterm=none        ctermfg=7        ctermbg=19
 hi WildMenu                      cterm=none        ctermfg=5        ctermbg=22
@@ -259,6 +261,12 @@ hi DirvishArg                    cterm=none        ctermfg=5        ctermbg=none
 " --------------------------------------
 hi DiffAdded                     cterm=none        ctermfg=2        ctermbg=none
 hi DiffRemoved                   cterm=none        ctermfg=1        ctermbg=none
+
+" --------------------------------------
+" lsp
+" --------------------------------------
+hi LspPopup                      cterm=none        ctermfg=7        ctermbg=none
+hi LspPopupBorder                cterm=none        ctermfg=8        ctermbg=none
 
 " --------------------------------------
 " quick-scope

@@ -4,6 +4,7 @@ endif
 
 let s:options = #{
   \   popupBorder: v:true,
+  \   echoSignature: v:true,
   \   showDiagWithSign: v:false,
   \ }
 autocmd User LspSetup call LspOptionsSet(s:options)
@@ -27,16 +28,14 @@ augroup lsp_attach
   autocmd User LspAttached nnoremap <silent> gri <cmd>LspGotoImpl<cr>
   autocmd User LspAttached nnoremap <silent> grt <cmd>LspGotoTypeDef<cr>
   autocmd User LspAttached nnoremap <silent> gO <cmd>LspDocumentSymbol<cr>
-  autocmd User LspAttached nnoremap <silent> K <cmd>LspShowSignature<cr>
+  autocmd User LspAttached nnoremap <silent> K <cmd>LspHover<cr>
+  autocmd User LspAttached inoremap <silent> <c-s> <cmd>LspShowSignature<cr>
   autocmd User LspAttached nnoremap <silent> <leader>F <cmd>LspFormat<cr>
 
   autocmd User LspAttached nnoremap <silent> [d <cmd>LspDiag prev<cr>
   autocmd User LspAttached nnoremap <silent> ]d <cmd>LspDiag next<cr>
   autocmd User LspAttached nnoremap <silent> <leader>d <cmd>LspDiag current<cr>
   autocmd User LspAttached nnoremap <silent> <leader>D <cmd>LspDiag show<cr>
-
-  " TODO: this doesn't seem to show any signature info
-  autocmd User LspAttached inoremap <silent> <c-s> <cmd>LspShowSignature<cr>
 augroup END 
 
 " load the lsp plugin after setting up autocommands

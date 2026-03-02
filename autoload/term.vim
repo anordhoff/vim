@@ -24,7 +24,7 @@ function term#Toggle(vsplit)
       else
         exec 'botright sbuffer ' .. g:termbuf
       endif
-      startinsert!
+      norm A
     catch
       if a:vsplit
         botright vertical terminal
@@ -51,6 +51,6 @@ function term#Focus()
     endif
   else
     call win_gotoid(g:termwin)
-    startinsert!
+    norm A
   endif
 endfunction
