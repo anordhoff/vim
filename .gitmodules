@@ -1,78 +1,78 @@
 # start
-[submodule "pack/downloads/start/abolish"]
-	path = pack/downloads/start/abolish
+[submodule "pack/download/start/abolish"]
+	path = pack/download/start/abolish
 	url = https://github.com/tpope/vim-abolish.git
-[submodule "pack/downloads/start/apathy"]
-	path = pack/downloads/start/apathy
+[submodule "pack/download/start/apathy"]
+	path = pack/download/start/apathy
 	url = https://github.com/tpope/vim-apathy.git
-[submodule "pack/downloads/start/commentary"]
-	path = pack/downloads/start/commentary
+[submodule "pack/download/start/commentary"]
+	path = pack/download/start/commentary
 	url = https://github.com/tpope/vim-commentary.git
-[submodule "pack/downloads/start/dirvish"]
-	path = pack/downloads/start/dirvish
+[submodule "pack/download/start/dirvish"]
+	path = pack/download/start/dirvish
 	url = https://github.com/justinmk/vim-dirvish.git
-[submodule "pack/downloads/start/dispatch"]
-	path = pack/downloads/start/dispatch
+[submodule "pack/download/start/dispatch"]
+	path = pack/download/start/dispatch
 	url = https://github.com/tpope/vim-dispatch.git
-[submodule "pack/downloads/start/eunuch"]
-	path = pack/downloads/start/eunuch
+[submodule "pack/download/start/eunuch"]
+	path = pack/download/start/eunuch
 	url = https://github.com/tpope/vim-eunuch.git
-[submodule "pack/downloads/start/fugitive"]
-	path = pack/downloads/start/fugitive
+[submodule "pack/download/start/fugitive"]
+	path = pack/download/start/fugitive
 	url = https://github.com/tpope/vim-fugitive.git
-[submodule "pack/downloads/start/git"]
-	path = pack/downloads/start/git
+[submodule "pack/download/start/git"]
+	path = pack/download/start/git
 	url = https://github.com/tpope/vim-git.git
-[submodule "pack/downloads/start/husk"]
-	path = pack/downloads/start/husk
+[submodule "pack/download/start/husk"]
+	path = pack/download/start/husk
 	url = https://github.com/vim-utils/vim-husk.git
-[submodule "pack/downloads/start/projectionist"]
-	path = pack/downloads/start/projectionist
+[submodule "pack/download/start/projectionist"]
+	path = pack/download/start/projectionist
 	url = https://github.com/tpope/vim-projectionist.git
-[submodule "pack/downloads/start/quick-scope"]
-	path = pack/downloads/start/quick-scope
+[submodule "pack/download/start/quick-scope"]
+	path = pack/download/start/quick-scope
 	url = https://github.com/unblevable/quick-scope.git
-[submodule "pack/downloads/start/repeat"]
-	path = pack/downloads/start/repeat
+[submodule "pack/download/start/repeat"]
+	path = pack/download/start/repeat
 	url = https://github.com/tpope/vim-repeat.git
-[submodule "pack/downloads/start/rhubarb"]
-	path = pack/downloads/start/rhubarb
+[submodule "pack/download/start/rhubarb"]
+	path = pack/download/start/rhubarb
 	url = https://github.com/tpope/vim-rhubarb.git
-[submodule "pack/downloads/start/sleuth"]
-	path = pack/downloads/start/sleuth
+[submodule "pack/download/start/sleuth"]
+	path = pack/download/start/sleuth
 	url = https://github.com/tpope/vim-sleuth.git
-[submodule "pack/downloads/start/sneak"]
-	path = pack/downloads/start/sneak
+[submodule "pack/download/start/sneak"]
+	path = pack/download/start/sneak
 	url = https://github.com/justinmk/vim-sneak.git
-[submodule "pack/downloads/start/speeddating"]
-	path = pack/downloads/start/speeddating
+[submodule "pack/download/start/speeddating"]
+	path = pack/download/start/speeddating
 	url = https://github.com/tpope/vim-speeddating.git
-[submodule "pack/downloads/start/subversive"]
-	path = pack/downloads/start/subversive
+[submodule "pack/download/start/subversive"]
+	path = pack/download/start/subversive
 	url = https://github.com/svermeulen/vim-subversive.git
-[submodule "pack/downloads/start/surround"]
-	path = pack/downloads/start/surround
+[submodule "pack/download/start/surround"]
+	path = pack/download/start/surround
 	url = https://github.com/tpope/vim-surround.git
-[submodule "pack/downloads/start/targets"]
-	path = pack/downloads/start/targets
+[submodule "pack/download/start/targets"]
+	path = pack/download/start/targets
 	url = https://github.com/wellle/targets.vim.git
-[submodule "pack/downloads/start/test"]
-	path = pack/downloads/start/test
+[submodule "pack/download/start/test"]
+	path = pack/download/start/test
 	url = https://github.com/vim-test/vim-test.git
-[submodule "pack/downloads/start/unimpaired"]
-	path = pack/downloads/start/unimpaired
+[submodule "pack/download/start/unimpaired"]
+	path = pack/download/start/unimpaired
 	url = https://github.com/tpope/vim-unimpaired.git
 
 # opt
-[submodule "pack/downloads/opt/copilot"]
-	path = pack/downloads/opt/copilot
+[submodule "pack/download/opt/copilot"]
+	path = pack/download/opt/copilot
 	url = https://github.com/github/copilot.vim.git
-[submodule "pack/downloads/opt/lsp"]
-	path = pack/downloads/opt/lsp
+[submodule "pack/download/opt/lsp"]
+	path = pack/download/opt/lsp
 	url = https://github.com/yegappan/lsp.git
-[submodule "pack/downloads/opt/markdown-preview"]
-	path = pack/downloads/opt/markdown-preview
+[submodule "pack/download/opt/markdown-preview"]
+	path = pack/download/opt/markdown-preview
 	url = https://github.com/iamcco/markdown-preview.nvim.git
-[submodule "pack/downloads/opt/startuptime"]
-	path = pack/downloads/opt/startuptime
+[submodule "pack/download/opt/startuptime"]
+	path = pack/download/opt/startuptime
 	url = https://github.com/dstein64/vim-startuptime.git
