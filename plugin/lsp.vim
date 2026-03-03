@@ -1,4 +1,4 @@
-if !empty($SSH_TTY)
+if g:is_remote
   finish
 endif
 
@@ -48,14 +48,13 @@ augroup lsp_attach
   autocmd User LspAttached nnoremap <silent> <leader>D <cmd>LspDiag show<cr>
 augroup END 
 
-" highlight groups
-" TODO: tmux prevents vim from using kitty's colorscheme
-hi LspPopup                      cterm=none        ctermfg=7        ctermbg=none
-hi LspPopupBorder                cterm=none        ctermfg=8        ctermbg=none
-hi LspDiagInlineError            cterm=undercurl   ctermfg=none     ctermbg=none ctermul=1
-hi LspDiagInlineWarning          cterm=undercurl   ctermfg=none     ctermbg=none ctermul=3
-hi LspDiagInlineHint             cterm=undercurl   ctermfg=none     ctermbg=none ctermul=6
-hi LspDiagInlineInfo             cterm=undercurl   ctermfg=none     ctermbg=none ctermul=6
-
 " load the lsp plugin after setting up autocommands
 packadd lsp
+
+" lsp highlight groups
+hi LspPopup                      cterm=none        ctermfg=7        ctermbg=none
+hi LspPopupBorder                cterm=none        ctermfg=8        ctermbg=none
+hi LspDiagInlineError            cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=1
+hi LspDiagInlineWarning          cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=3
+hi LspDiagInlineHint             cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=6
+hi LspDiagInlineInfo             cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=6

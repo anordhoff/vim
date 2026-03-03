@@ -1,15 +1,6 @@
 " vim: foldmethod=marker foldlevel=0
 
-" TODO: check if !exists($SSH_TTY) works with dev containers (docker/podman). If not, how can we update the vim config such that opt/ plugins do not load when running vim from within an SSH session or when exec'd into a docker container
-" TODO: QuickScopePrimary and QuickScopeSecondary removes the highlight from Search/IncSearch for the specific character. Can the quick-scope char be set to bold/italic, while preserving Search/IncSearch ctermbg highlight?
-" TODO: "E947: Job still running in buffer" error when closing vim with a terminal window. Is there a better workflow fow closeng vim when a terminal session was created?
-" TODO: in tmux.conf, "bg=color16", "fg=color4", etc are highlighted to their truecolor. However, my terminal emulator does not use the color shown. Disable the inline highlighting of "colorX"
 " TODO: shelcmdflag=-c allows the use of aliases when shelling out from vim's command line, but can also cause command line formatting issues. Is there a workaround that allows me to use aliases, eg :!g status?
-" TODO: Can I use "set showbreak=' .. '" instead of "let &showbreak=' .. '"
-" TODO: `nnoremap <leader>y :let @" = expand("%:p")<cr>` no longer works
-" TODO: yanking visually selected line to the system clipboard with "+y and then pasting in insert mode with <ctrl-shift-v> adds "[27;5;106~" to the end of the pasted text
-" TODO: :Lint permanently changes the makeprg to "makeprg=golangci-lint run --show-stats=false --output.text.print-issued-lines=false" when it should reset back to the default "makeprg=make"
-" TODO: are there are noremaps that would make more sense as maps, and vice versa (any maps that would be safer as noremaps)?
 
 " --- settings --- {{{
 
@@ -43,6 +34,9 @@ filetype plugin indent on
 
 " enable syntax highlighting
 syntax enable
+
+" check if running on a server or container
+let g:is_remote = !empty($SSH_TTY) || !empty($container)
 
 " set the cursor shape to a bar in insert mode
 let &t_SI = "\e[6 q"
@@ -108,13 +102,6 @@ set runtimepath+=~/jobfiles/vim/after
 set packpath-=~/.config/vim
 set packpath^=~/.config/vim,~/jobfiles/vim
 set packpath+=~/jobfiles/vim/after
-
-" open the quickfix and location list automatically, but don't steal focus
-augroup quickfix_config
-  autocmd!
-  autocmd QuickFixCmdPost [^l]* cwindow | wincmd p
-  autocmd QuickFixCmdPost l*    lwindow | wincmd p
-augroup END
 
 " wrap text in the preview window
 augroup preview_config

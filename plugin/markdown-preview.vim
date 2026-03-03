@@ -1,4 +1,4 @@
-if !empty($SSH_TTY)
+if g:is_remote
   finish
 endif
 

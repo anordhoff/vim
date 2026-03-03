@@ -1,4 +1,4 @@
-if !empty($SSH_TTY)
+if g:is_remote
   finish
 endif
 packadd copilot
@@ -8,7 +8,7 @@ let g:copilot_no_tab_map = v:true
 inoremap <silent><expr> <c-y> pumvisible() ? "\<c-y>" : copilot#Accept()
 
 " other keymaps
-inoremap <c-x><c-a> <plug>(copilot-suggest)
+imap <c-x><c-a> <plug>(copilot-suggest)
 inoremap <silent><expr> <c-e> pumvisible() ? "\<c-e>" : copilot#Dismiss()
 inoremap <silent><expr> <c-n> pumvisible() ? "\<c-n>" : copilot#Next()
 inoremap <silent><expr> <c-p> pumvisible() ? "\<c-p>" : copilot#Previous()

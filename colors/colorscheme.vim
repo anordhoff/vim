@@ -259,8 +259,13 @@ hi DiffRemoved                   cterm=none        ctermfg=1        ctermbg=none
 " --------------------------------------
 " lsp
 " --------------------------------------
-hi LspPopup                      cterm=none        ctermfg=7        ctermbg=none
-hi LspPopupBorder                cterm=none        ctermfg=8        ctermbg=none
+" TODO: custom highlights are overwritten by the lsp plugin
+" hi LspPopup                      cterm=none        ctermfg=7        ctermbg=none
+" hi LspPopupBorder                cterm=none        ctermfg=8        ctermbg=none
+" hi LspDiagInlineError            cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=1
+" hi LspDiagInlineWarning          cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=3
+" hi LspDiagInlineHint             cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=6
+" hi LspDiagInlineInfo             cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=6
 
 " --------------------------------------
 " quick-scope

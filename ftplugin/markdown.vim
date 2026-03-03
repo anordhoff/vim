@@ -13,7 +13,7 @@ xnoremap <buffer><silent> gq :<c-u>call markdown#Renumber(line("'<"), line("'>")
 
 
 " lazy load markdown-preview
-if !empty($SSH_TTY)
+if g:is_remote
   finish
 endif
 if !exists("g:loaded_markdown_preview")
