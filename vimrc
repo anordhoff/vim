@@ -1,6 +1,5 @@
 " vim: foldmethod=marker foldlevel=0
 
-" TODO: confirm if git mergetool works on fedora with `gvim -v` and fugitive. Do the nnoremaps `gh` and `gl` still work?
 " TODO: check if !exists($SSH_TTY) works with dev containers (docker/podman). If not, how can we update the vim config such that opt/ plugins do not load when running vim from within an SSH session or when exec'd into a docker container
 " TODO: QuickScopePrimary and QuickScopeSecondary removes the highlight from Search/IncSearch for the specific character. Can the quick-scope char be set to bold/italic, while preserving Search/IncSearch ctermbg highlight?
 " TODO: "E947: Job still running in buffer" error when closing vim with a terminal window. Is there a better workflow fow closeng vim when a terminal session was created?
@@ -48,6 +47,10 @@ syntax enable
 " set the cursor shape to a bar in insert mode
 let &t_SI = "\e[6 q"
 let &t_EI = "\e[2 q"
+
+" enable undercurl support with cterm
+let &t_Cs = "\e[4:3m"
+let &t_Ce = "\e[4:0m"
 
 " enable meta keymaps with modifyOtherKeys level 2
 let &t_TI = "\<Esc>[>4;2m"

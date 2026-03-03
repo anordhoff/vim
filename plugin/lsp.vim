@@ -6,6 +6,16 @@ let s:options = #{
   \   popupBorder: v:true,
   \   echoSignature: v:true,
   \   showDiagWithSign: v:false,
+  \   highlightDiagInline: v:true,
+  \   semanticHighlight: v:true,
+  \   autoHighlightDiags: v:true,
+  \   showDiagWithVirtualText: v:true,
+  \   diagVirtualTextAlign: 'after',
+  \   diagVirtualTextWrap: 'truncate',
+  \   diagSignErrorText: 'E',
+  \   diagSignWarningText: 'W',
+  \   diagSignHintText: 'H',
+  \   diagSignInfoText: 'I',
   \ }
 autocmd User LspSetup call LspOptionsSet(s:options)
 
@@ -37,6 +47,14 @@ augroup lsp_attach
   autocmd User LspAttached nnoremap <silent> <leader>d <cmd>LspDiag current<cr>
   autocmd User LspAttached nnoremap <silent> <leader>D <cmd>LspDiag show<cr>
 augroup END 
+
+" highlight groups
+hi LspPopup                      cterm=none        ctermfg=7        ctermbg=none
+hi LspPopupBorder                cterm=none        ctermfg=8        ctermbg=none
+hi LspDiagInlineError            cterm=undercurl   ctermfg=none     ctermbg=none ctermul=1
+hi LspDiagInlineWarning          cterm=undercurl   ctermfg=none     ctermbg=none ctermul=2
+hi LspDiagInlineHint             cterm=undercurl   ctermfg=none     ctermbg=none ctermul=6
+hi LspDiagInlineInfo             cterm=undercurl   ctermfg=none     ctermbg=none ctermul=6
 
 " load the lsp plugin after setting up autocommands
 packadd lsp
