@@ -1,6 +1,6 @@
 " vim: foldmethod=marker foldlevel=0
 
-" TODO: shelcmdflag=-c allows the use of aliases when shelling out from vim's command line, but can also cause command line formatting issues. Is there a workaround that allows me to use aliases, eg :!g status?
+" TODO: ciw after opening a fold deletes the entire fold — known targets.vim bug (github.com/wellle/targets.vim/issues/247)
 
 " --- settings --- {{{
 
@@ -27,35 +27,12 @@ set mouse=a             " enable the use of the mouse (for scrolling)
 set mmp=10000           " prevent memory errors when loading large buffers
 set timeoutlen=5000     " make complicated commands more forgiving to type
 set ttimeoutlen=1       " minimal delay for escape key presses
-" set shellcmdflag=-ic    " interactive command mode shell (for aliases)
 
 " enable filetype detection and loading of plugin and indent files
 filetype plugin indent on
 
 " enable syntax highlighting
 syntax enable
-
-" check if running on a server or container
-let g:is_remote = !empty($SSH_TTY) || !empty($container)
-
-" set the cursor shape to a bar in insert mode
-let &t_SI = "\e[6 q"
-let &t_EI = "\e[2 q"
-
-" enable undercurl support with cterm
-let &t_Cs = "\e[4:3m"
-let &t_Ce = "\e[4:0m"
-
-" enable undercurl color with ctermul
-let &t_AU = "\e[58;5;%dm"
-
-" enable meta keymaps with modifyOtherKeys level 2
-let &t_TI = "\e[>4;2m"
-let &t_TE = "\e[>4;m"
-
-" show search count; don't give ins-complete-menu messages or file info
-set shortmess-=S
-set shortmess+=cF
 
 " load internal plugins
 if &loadplugins
@@ -65,6 +42,28 @@ endif
 " disable netrw in favor of vim-dirvish
 let g:loaded_netrw       = 1
 let g:loaded_netrwPlugin = 1
+
+" check if running on a server or container
+let g:is_remote = !empty($SSH_TTY) || !empty($container)
+
+" set the cursor shape to a bar in insert mode
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+
+" enable meta keymaps with modifyOtherKeys level 2
+let &t_TI = "\e[>4;2m"
+let &t_TE = "\e[>4;m"
+
+" enable undercurl support with cterm
+let &t_Cs = "\e[4:3m"
+let &t_Ce = "\e[4:0m"
+
+" enable undercurl highlighting with ctermul
+let &t_AU = "\e[58;5;%dm"
+
+" show search count; don't print ins-complete-menu messages or file info
+set shortmess-=S
+set shortmess+=cF
 
 " use two spaces instead of tabs by default
 set tabstop=2
@@ -84,7 +83,7 @@ set wildmode=longest:full,full
 set wildignorecase
 
 " list of file patterns to ignore
-set wildignore+=tags,*.tags,.git/**,**/bin/**,**/vendor/**,**/node_modules/**,**/pack/download/opt/**,**/pack/download/start/**,**/tmux/plugins/**
+set wildignore+=tags,*.tags,.git/**,**/bin/**,**/vendor/**,**/node_modules/**,**/pack/*/opt/**,**/pack/*/start/**,**/tmux/plugins/**
 
 " ignore files and directories listed in .gitignore
 let &wildignore ..= gitignore#WildignoreList('.gitignore')
@@ -102,6 +101,12 @@ set runtimepath+=~/jobfiles/vim/after
 set packpath-=~/.config/vim
 set packpath^=~/.config/vim,~/jobfiles/vim
 set packpath+=~/jobfiles/vim/after
+
+" load custom colorscheme
+colorscheme colorscheme
+
+" }}}
+" --- augroups --- {{{
 
 " wrap text in the preview window
 augroup preview_config
@@ -128,9 +133,6 @@ augroup cursor_config
   autocmd!
   autocmd BufRead * autocmd FileType <buffer> ++once if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exec 'normal! g`"zz' | endif
 augroup END
-
-" load custom colorscheme
-colorscheme colorscheme
 
 " }}}
 " --- mappings --- {{{
@@ -162,8 +164,9 @@ nnoremap gd <c-]>
 nnoremap <silent> <leader>z :tabnew %<cr><c-o>
 
 " grep current buffer or all files in current directory
-nnoremap gb :lvimgrep //j %<left><left><left><left>
-nnoremap gp :vimgrep //j **/*<left><left><left><left><left><left><left>
+" TODO: is there a better way to move the cursor between // than <left><left>...
+nnoremap <leader>g :vimgrep //j **/* \| copen \| wincmd p<left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left>
+nnoremap <leader>l :lvimgrep //j % \| lopen \| wincmd p<left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left>
 
 " toggle the quickfix list window and maximize window to the width of vim
 nnoremap <silent> <m-q> :call quickfix#ToggleQuickfixlist()<cr>
@@ -212,48 +215,48 @@ command! -nargs=1 Clear call registers#Clear(<q-args>)
 " set wildmode=noselect:lastused,full
 " set wildoptions=pum
 
-" :h fuzzy-file-picker
-set findfunc=Find
-func Find(arg, _)
-  if empty(s:filescache)
-    let s:filescache = globpath('.', '**', 1, 1)
-    call filter(s:filescache, '!isdirectory(v:val)')
-    call map(s:filescache, "fnamemodify(v:val, ':.')")
-  endif
-  return a:arg == '' ? s:filescache : matchfuzzy(s:filescache, a:arg)
-endfunc
-let s:filescache = []
-autocmd CmdlineEnter : let s:filescache = []
-nnoremap <leader>f :find 
+" " :h fuzzy-file-picker
+" set findfunc=Find
+" func Find(arg, _)
+"   if empty(s:filescache)
+"     let s:filescache = globpath('.', '**', 1, 1)
+"     call filter(s:filescache, '!isdirectory(v:val)')
+"     call map(s:filescache, "fnamemodify(v:val, ':.')")
+"   endif
+"   return a:arg == '' ? s:filescache : matchfuzzy(s:filescache, a:arg)
+" endfunc
+" let s:filescache = []
+" autocmd CmdlineEnter : let s:filescache = []
+" nnoremap <leader>f :find
 
-command! -nargs=+ -complete=customlist,<SID>Grep
-  \ Grep call <SID>VisitFile()
+" command! -nargs=+ -complete=customlist,<SID>Grep
+"   \ Grep call <SID>VisitFile()
 
-func s:Grep(arglead, cmdline, cursorpos)
-  if match(&grepprg, '\$\*') == -1 | let &grepprg ..= ' $*' | endif
-  let cmd = substitute(&grepprg, '\$\*', shellescape(escape(a:arglead, '\')), '')
-  return len(a:arglead) > 1 ? systemlist(cmd) : []
-endfunc
+" func s:Grep(arglead, cmdline, cursorpos)
+"   if match(&grepprg, '\$\*') == -1 | let &grepprg ..= ' $*' | endif
+"   let cmd = substitute(&grepprg, '\$\*', shellescape(escape(a:arglead, '\')), '')
+"   return len(a:arglead) > 1 ? systemlist(cmd) : []
+" endfunc
 
-func s:VisitFile()
-  let item = getqflist(#{lines: [s:selected]}).items[0]
-  let pos  = '[0,\ item.lnum,\ item.col,\ 0]'
-  exe $':b +call\ setpos(".",\ {pos}) {item.bufnr}'
-  call setbufvar(item.bufnr, '&buflisted', 1)
-endfunc
+" func s:VisitFile()
+"   let item = getqflist(#{lines: [s:selected]}).items[0]
+"   let pos  = '[0,\ item.lnum,\ item.col,\ 0]'
+"   exe $':b +call\ setpos(".",\ {pos}) {item.bufnr}'
+"   call setbufvar(item.bufnr, '&buflisted', 1)
+" endfunc
 
-autocmd CmdlineLeavePre :
-      \ if get(cmdcomplete_info(), 'matches', []) != [] |
-      \   let s:info = cmdcomplete_info() |
-      \   if getcmdline() =~ '^\s*fin\%[d]\s' && s:info.selected == -1 |
-      \     call setcmdline($'find {s:info.matches[0]}') |
-      \   endif |
-      \   if getcmdline() =~ '^\s*Grep\s' |
-      \     let s:selected = s:info.selected != -1
-      \         ? s:info.matches[s:info.selected] : s:info.matches[0] |
-      \     call setcmdline(s:info.cmdline_orig) |
-      \   endif |
-      \ endif
+" autocmd CmdlineLeavePre :
+"       \ if get(cmdcomplete_info(), 'matches', []) != [] |
+"       \   let s:info = cmdcomplete_info() |
+"       \   if getcmdline() =~ '^\s*fin\%[d]\s' && s:info.selected == -1 |
+"       \     call setcmdline($'find {s:info.matches[0]}') |
+"       \   endif |
+"       \   if getcmdline() =~ '^\s*Grep\s' |
+"       \     let s:selected = s:info.selected != -1
+"       \         ? s:info.matches[s:info.selected] : s:info.matches[0] |
+"       \     call setcmdline(s:info.cmdline_orig) |
+"       \   endif |
+"       \ endif
 
 " }}}
 " --- statusline --- {{{
@@ -263,17 +266,22 @@ set statusline=%!Statusline(g:statusline_winid)
 
 " assemble the custom statusline for most filetypes
 function Statusline(winid)
-  let statusline   = ' ' .. Background(a:winid) " left padding; set status line background color
-  let statusline ..= '%{BufferNr()}'            " buffer number
-  let statusline ..= '%f  '                     " filepath
-  let statusline ..= '%{NopluginFlag()}'        " noplugin flag
-  let statusline ..= '%H%W%R%M'                 " help/preview/read-only/modified flags
-  let statusline ..= '%=   %c%V  :  %2l/%L'     " byte index, virtual column number; line number
-  let statusline ..= '%{Filetype()}'            " filetype
-  let statusline ..= '%* '                      " reset background color; right padding
+  let statusline   = ' '                 " left padding
+  let statusline ..= Background(a:winid) " set status line background color
+  let statusline ..= '%{BufferNr()} '    " buffer number
+  let statusline ..= '%f  '              " filepath
+  let statusline ..= '%{NopluginFlag()}' " noplugin flag
+  let statusline ..= '%H%W%R%M'          " help,preview,read-only, and modified flags
+  let statusline ..= '%= '               " right align
+  let statusline ..= '%7(%c%V%)'         " byte index, virtual column number
+  let statusline ..= '  :  '             " separator and padding
+  let statusline ..= '%2l/%L '           " current line number/total line count
+  let statusline ..= '%{Filetype()}'     " filetype
+  let statusline ..= '%* '               " reset background color; right padding
   return statusline
 endfunction
 
+" TODO: move these functions to autoload/statusline.vim
 " set background depending on whether the window is active
 function Background(winid)
   return a:winid == win_getid() ? '%#StatusLineActive#' : '%#StatusLineInactive#'
@@ -281,17 +289,17 @@ endfunction
 
 " hide buffer number if buffer sets nobuflisted
 function BufferNr()
-  return &buflisted ? ' [' .. bufnr('%') .. ']  ' : ' '
-endfunction
-
-" correct padding when there is no filetype
-function Filetype()
-  return &filetype == '' ? ' ' : '  [' .. &filetype .. '] '
+  return &buflisted ? ' [' .. bufnr('%') .. '] ' : ''
 endfunction
 
 " noplugin flag if running with --noplugin set
 function NopluginFlag()
   return !&loadplugins ? 'NP' : ''
+endfunction
+
+" correct padding when there is no filetype
+function Filetype()
+  return &filetype != '' ? ' [' .. &filetype .. '] ' : ''
 endfunction
 
 " quickfix, location list, dirvish, and terminal buffer status lines
@@ -308,7 +316,7 @@ endfunction
 
 function DirvishStatusline(winid)
   if winwidth(a:winid) > 30
-    return ' ' .. Background(a:winid) .. " %f%=%{Filetype()}%* "
+    return ' ' .. Background(a:winid) .. " %f%= %{Filetype()}%* "
   else
     return ' ' .. Background(a:winid) .. " %f%= %* "
   endif
@@ -390,7 +398,7 @@ augroup END
 "   let $VISUAL = 'vimx --servername ' .. v:servername .. ' --remote-wait'
 " endif
 
-" open terminal in a horizontal or vertical split
+" open or focus the terminal window
 nnoremap <silent> <m-s> <cmd>call term#Toggle(0)<cr>
 nnoremap <silent> <m-v> <cmd>call term#Toggle(1)<cr>
 nnoremap <silent> <m-w> <cmd>call term#Focus()<cr>

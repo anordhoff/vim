@@ -15,7 +15,8 @@ let g:test#custom_transformations = {'delve': function('DelveTransformVerbose')}
 " keymaps
 nnoremap <silent> <leader>t :TestNearest<cr>
 nnoremap <silent> <leader>T :TestNearest -v<cr>
-nnoremap <silent> <leader>l :TestLast<cr>
+" TODO: conflicts with :lvimgrep mappings
+" nnoremap <silent> <leader>l :TestLast<cr>
 nnoremap <silent> <leader>p :TestFile<cr>
 
 augroup test_config
