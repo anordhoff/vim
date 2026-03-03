@@ -153,12 +153,6 @@ hi SpellCap              cterm=undercurl ctermfg=none ctermbg=none guisp=#d79921
 hi SpellLocal            cterm=undercurl ctermfg=none ctermbg=none guisp=#98971a
 hi SpellRare             cterm=undercurl ctermfg=none ctermbg=none guisp=#458588
 
-" --------------------------------------
-" netrw
-" --------------------------------------
-hi netrwDir                      cterm=none        ctermfg=4        ctermbg=none
-hi netrwSymLink                  cterm=none        ctermfg=5        ctermbg=none
-
 
 " ----------------------------------------------------------
 " languages

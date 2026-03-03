@@ -1,13 +1,12 @@
 " sort directories first; ignore tags file and .git directory
 let g:dirvish_mode = ':sort ,^.*[\/], | :silent keeppatterns g/^tags$\|^.git\/$/d _'
+let g:dirvish_mode = ':sort ,^.*[\/], | :silent keeppatterns g/^tags$\|\.swp$\|^.git\//d _'
 
 " open the current working directory
 nnoremap <silent> _ <cmd>Dirvish .<cr>
 
-augroup dirvish_config
-  autocmd!
-
-  " TODO: this doesn't work with vim (was written for neovim)
-  " use dirvish instead of netrw when opening a directory with vim
-  autocmd VimEnter * if exists('#FileExplorer') | exe 'au! FileExplorer *' | endif
-augroup END
+" override netrw commands
+command -nargs=? -complete=dir Explore Dirvish <args>
+command -nargs=? -complete=dir Sexplore belowright split | silent Dirvish <args>
+command -nargs=? -complete=dir Vexplore leftabove vsplit | silent Dirvish <args>
+command -nargs=? -complete=dir Lexplore leftabove 30vsplit | silent Dirvish <args>

@@ -9,10 +9,7 @@
 " TODO: Can I use "set showbreak=' .. '" instead of "let &showbreak=' .. '"
 " TODO: `nnoremap <leader>y :let @" = expand("%:p")<cr>` no longer works
 " TODO: yanking visually selected line to the system clipboard with "+y and then pasting in insert mode with <ctrl-shift-v> adds "[27;5;106~" to the end of the pasted text
-" TODO: TermStatusline() should print the command used to launch the terminal (eg python, /bin/zsh, etc), along with current status (running, finished), similar to the default terminal statusline. Perhaps term_gettitle(bufnr('%')) isn't working as expected
-" TODO: vim-dirvish should hide vim swap files (*.swp)
 " TODO: :Lint permanently changes the makeprg to "makeprg=golangci-lint run --show-stats=false --output.text.print-issued-lines=false" when it should reset back to the default "makeprg=make"
-" TODO: why doesn't nnoremap work within ftplugin/netrw.vim? Why do I have to use nmap"
 " TODO: are there are noremaps that would make more sense as maps, and vice versa (any maps that would be safer as noremaps)?
 
 " --- settings --- {{{
@@ -60,11 +57,14 @@ let &t_TE = "\<Esc>[>4;m"
 set shortmess-=S
 set shortmess+=cF
 
-" load internal packages
+" load internal plugins
 if &loadplugins
   packadd cfilter
-  packadd netrw
 endif
+
+" disable netrw in favor of vim-dirvish
+let g:loaded_netrw       = 1
+let g:loaded_netrwPlugin = 1
 
 " use two spaces instead of tabs by default
 set tabstop=2
@@ -270,20 +270,25 @@ set statusline=%!Statusline(g:statusline_winid)
 
 " assemble the custom statusline for most filetypes
 function Statusline(winid)
-  let statusline  = ' ' .. Background(a:winid) " left padding; set status line background color
-  let statusline ..= ' [%n]  '                 " buffer number
-  let statusline ..= '%f  '                    " filepath
-  let statusline ..= '%{NopluginFlag()}'       " noplugin flag
-  let statusline ..= '%H%W%R%M'                " help/preview/read-only/modified flags
-  let statusline ..= '%=   %c%V  :  %2l/%L'    " byte index, virtual column number; line number
-  let statusline ..= '%{Filetype()}'           " filetype
-  let statusline ..= '%* '                     " reset background color; right padding
+  let statusline   = ' ' .. Background(a:winid) " left padding; set status line background color
+  let statusline ..= '%{BufferNr()}'            " buffer number
+  let statusline ..= '%f  '                     " filepath
+  let statusline ..= '%{NopluginFlag()}'        " noplugin flag
+  let statusline ..= '%H%W%R%M'                 " help/preview/read-only/modified flags
+  let statusline ..= '%=   %c%V  :  %2l/%L'     " byte index, virtual column number; line number
+  let statusline ..= '%{Filetype()}'            " filetype
+  let statusline ..= '%* '                      " reset background color; right padding
   return statusline
 endfunction
 
 " set background depending on whether the window is active
 function Background(winid)
   return a:winid == win_getid() ? '%#StatusLineActive#' : '%#StatusLineInactive#'
+endfunction
+
+" hide buffer number if buffer sets nobuflisted
+function BufferNr()
+  return &buflisted ? ' [' .. bufnr('%') .. ']  ' : ' '
 endfunction
 
 " correct padding when there is no filetype
@@ -296,22 +301,16 @@ function NopluginFlag()
   return !&loadplugins ? 'NP' : ''
 endfunction
 
-" quickfix and location list / netrw / terminal buffer status lines
+" quickfix, location list, dirvish, and terminal buffer status lines
 augroup statusline_config
   autocmd!
   autocmd Filetype qf setlocal statusline=%!QuickfixListStatusline(g:statusline_winid)
-  autocmd Filetype netrw setlocal statusline=%!NetrwStatusline(g:statusline_winid)
+  autocmd Filetype dirvish setlocal statusline=%!DirvishStatusline(g:statusline_winid)
   autocmd TerminalOpen * setlocal statusline=%!TermStatusline(g:statusline_winid)
 augroup END
 
 function QuickfixListStatusline(winid)
   return ' ' .. Background(a:winid) .. " [%l/%L lines]  %{QuickfixTitle()}%=%q %* "
-endfunction
-function NetrwStatusline(winid)
-  return ' ' .. Background(a:winid) .. ' [%n]  %l/%L lines%=[netrw] %* '
-endfunction
-function TermStatusline(winid)
-  return ' ' .. Background(a:winid) .. ' [%n]  %{TermShell()}  %{NopluginFlag()}%R%=[term] %* '
 endfunction
 
 " return the title of the quickfix window
@@ -319,9 +318,16 @@ function QuickfixTitle()
   return exists('w:quickfix_title') ? w:quickfix_title .. '  ' : ''
 endfunction
 
-" return shell used by terminal
-function TermShell()
-  return term_gettitle(bufnr('%'))
+function DirvishStatusline(winid)
+  if winwidth(a:winid) > 30
+    return ' ' .. Background(a:winid) .. " %f%=%{Filetype()}%* "
+  else
+    return ' ' .. Background(a:winid) .. " %f%= %* "
+  endif
+endfunction
+
+function TermStatusline(winid)
+  return ' ' .. Background(a:winid) .. ' %f  %{NopluginFlag()}%=  [term] %* '
 endfunction
 
 " }}}
@@ -352,8 +358,6 @@ function TabLabel(n)
     return '[No Name]'
   elseif filetype == 'help'
     return 'help'
-  elseif filetype == 'netrw'
-    return 'netrw'
   elseif filetype == 'dirvish'
     return 'dirvish'
   elseif bufname =~ '^fugitive://'
@@ -368,19 +372,6 @@ function TabLabel(n)
     return bufname
   endif
 endfunction
-
-" }}}
-" --- netrw --- {{{
-
-if &loadplugins
-  let g:netrw_winsize = -30  " set the absolute size of netrw windows
-  let g:netrw_banner = 0     " hide the informational banner
-  let g:netrw_liststyle = 3  " tree style listing
-  let g:netrw_dirhistmax = 0 " suppress netrw history files
-
-  " toggle netrw as a project drawer
-  nnoremap <silent> <m--> <cmd>Lexplore<cr>
-endif
 
 " }}}
 " --- notes --- {{{
