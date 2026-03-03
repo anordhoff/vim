@@ -52,9 +52,12 @@ let &t_EI = "\e[2 q"
 let &t_Cs = "\e[4:3m"
 let &t_Ce = "\e[4:0m"
 
+" enable undercurl color with ctermul
+let &t_AU = "\e[58;5;%dm"
+
 " enable meta keymaps with modifyOtherKeys level 2
-let &t_TI = "\<Esc>[>4;2m"
-let &t_TE = "\<Esc>[>4;m"
+let &t_TI = "\e[>4;2m"
+let &t_TE = "\e[>4;m"
 
 " show search count; don't give ins-complete-menu messages or file info
 set shortmess-=S
@@ -313,12 +316,7 @@ augroup statusline_config
 augroup END
 
 function QuickfixListStatusline(winid)
-  return ' ' .. Background(a:winid) .. " [%l/%L lines]  %{QuickfixTitle()}%=%q %* "
-endfunction
-
-" return the title of the quickfix window
-function QuickfixTitle()
-  return exists('w:quickfix_title') ? w:quickfix_title .. '  ' : ''
+  return ' ' .. Background(a:winid) .. " [%l/%L lines]  %{exists('w:quickfix_title') ? w:quickfix_title .. '  ' : '' }%=%q %* "
 endfunction
 
 function DirvishStatusline(winid)
