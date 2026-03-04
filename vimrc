@@ -1,8 +1,5 @@
 " vim: foldmethod=marker foldlevel=0
 
-" TODO: ciw after opening a fold deletes the entire fold — known targets.vim bug (https://github.com/wellle/targets.vim/issues/247)
-" TODO: keympas such as `gx` and commands such as `:Open https://google.com` flash the vim screen
-
 " --- settings --- {{{
 
 set notermguicolors     " disable 24-bit colors
@@ -162,10 +159,9 @@ nnoremap <leader>b :b **/*
 " TODO: make this mapping fuzzy search :h fuzzy-file-picker
 nnoremap <leader>f :f **/*
 
-" grep current buffer or all files in current directory
-" TODO: is there a better way to move the cursor between // than <left><left>...
-nnoremap <leader>g :vimgrep //j **/* \| copen \| wincmd p<left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left>
-nnoremap <leader>l :lvimgrep //j % \| lopen \| wincmd p<left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left>
+" grep the current buffer or all files in the current directory
+nnoremap <leader>g :vimgrep //j **/* \| copen \| wincmd p<c-\>e[setcmdpos(10), getcmdline()][1]<cr>
+nnoremap <leader>l :lvimgrep //j % \| lopen \| wincmd p<c-\>e[setcmdpos(11), getcmdline()][1]<cr>
 
 " clear search highlighting
 nnoremap <silent> <c-l> :nohlsearch<cr>
@@ -274,71 +270,33 @@ set statusline=%!Statusline(g:statusline_winid)
 
 " assemble the custom statusline for most filetypes
 function Statusline(winid)
-  let statusline   = ' '                 " left padding
-  let statusline ..= Background(a:winid) " set status line background color
-  let statusline ..= '%{BufferNr()} '    " buffer number
-  let statusline ..= '%f  '              " filepath
-  let statusline ..= '%{NopluginFlag()}' " noplugin flag
-  let statusline ..= '%H%W%R%M'          " help,preview,read-only, and modified flags
-  let statusline ..= '%= '               " right align
-  let statusline ..= '%7(%c%V%)'         " byte index, virtual column number
-  let statusline ..= '  :  '             " separator and padding
-  let statusline ..= '%2l/%L '           " current line number/total line count
-  let statusline ..= '%{Filetype()}'     " filetype
-  let statusline ..= '%* '               " reset background color; right padding
+  let statusline   = ' '                            " left padding
+  let statusline ..= statusline#Background(a:winid) " set status line background color
+  let statusline ..= '%{statusline#BufferNr()} '    " buffer number
+  let statusline ..= '%f  '                         " filepath
+  let statusline ..= '%{statusline#NopluginFlag()}' " noplugin flag
+  let statusline ..= '%H%W%R%M'                     " help,preview,read-only, and modified flags
+  let statusline ..= '%= '                          " right align
+  let statusline ..= '%7(%c%V%)'                    " byte index, virtual column number
+  let statusline ..= '  :  '                        " separator and padding
+  let statusline ..= '%2l/%L '                      " current line number/total line count
+  let statusline ..= '%{statusline#Filetype()}'     " filetype
+  let statusline ..= '%* '                          " reset background color; right padding
   return statusline
-endfunction
-
-" TODO: move these functions to autoload/statusline.vim
-" set background depending on whether the window is active
-function Background(winid)
-  return a:winid == win_getid() ? '%#StatusLineActive#' : '%#StatusLineInactive#'
-endfunction
-
-" hide buffer number if buffer sets nobuflisted
-function BufferNr()
-  return &buflisted ? ' [' .. bufnr('%') .. '] ' : ''
-endfunction
-
-" noplugin flag if running with --noplugin set
-function NopluginFlag()
-  return !&loadplugins ? 'NP' : ''
-endfunction
-
-" correct padding when there is no filetype
-function Filetype()
-  return &filetype != '' ? ' [' .. &filetype .. '] ' : ''
 endfunction
 
 " quickfix, location list, dirvish, and terminal buffer status lines
 augroup statusline_config
   autocmd!
-  autocmd Filetype qf setlocal statusline=%!QuickfixListStatusline(g:statusline_winid)
-  autocmd Filetype dirvish setlocal statusline=%!DirvishStatusline(g:statusline_winid)
-  autocmd TerminalOpen * setlocal statusline=%!TermStatusline(g:statusline_winid)
+  autocmd Filetype qf setlocal statusline=%!statusline#QuickfixList(g:statusline_winid)
+  autocmd Filetype dirvish setlocal statusline=%!statusline#Dirvish(g:statusline_winid)
+  autocmd TerminalOpen * setlocal statusline=%!statusline#Term(g:statusline_winid)
 augroup END
-
-function QuickfixListStatusline(winid)
-  return ' ' .. Background(a:winid) .. " [%l/%L lines]  %{exists('w:quickfix_title') ? w:quickfix_title .. '  ' : '' }%=%q %* "
-endfunction
-
-function DirvishStatusline(winid)
-  if winwidth(a:winid) > 30
-    return ' ' .. Background(a:winid) .. " %f%= %{Filetype()}%* "
-  else
-    return ' ' .. Background(a:winid) .. " %f%= %* "
-  endif
-endfunction
-
-function TermStatusline(winid)
-  return ' ' .. Background(a:winid) .. ' %f  %{NopluginFlag()}%=  [term] %* '
-endfunction
 
 " }}}
 " --- tabline --- {{{
 
-" TODO: can the tabline be simplified to mostly use the default tabline, but also print the full relative path of the 
-" file (rather than shortening the directories to just a single char)
+" TODO: can the tabline/tablael be simplified to mostly use the default tabline, but also print the full relative path of the file (rather than shortening the directories to just a single char)
 set tabline=%!TabLine()
 
 function TabLine()
@@ -367,13 +325,7 @@ function TabLabel(n)
   elseif filetype == 'dirvish'
     return 'dirvish'
   elseif bufname =~ '^fugitive://'
-    let filename = bufname
-    for dir in split(getcwd(), '/')
-      let filename = substitute(filename, dir .. '/', '', '')
-    endfor
-    let filename = substitute(filename, '/.git//', '', '')
-    let filename = substitute(filename, '\d\{1}/', '', '')
-    return trim(filename, '://', 2)
+    return 'fugitive://' .. fnamemodify(FugitiveReal(bufname), ':.')
   else
     return bufname
   endif
@@ -399,22 +351,14 @@ augroup END
 " }}}
 " --- terminal --- {{{
 
-" open or focus the terminal window
+" use ctrl-o as the special key in terminal windows
+set termwinkey=<c-o>
+
+" toggle the terminal window
 nnoremap <silent> <m-s> <cmd>call term#Toggle(0)<cr>
 nnoremap <silent> <m-v> <cmd>call term#Toggle(1)<cr>
-nnoremap <silent> <m-w> <cmd>call term#Focus()<cr>
-
-" toggle terminal without leaving terminal insert mode
-tnoremap <silent> <m-s> <c-\><c-n><cmd>call term#Toggle(0)<cr>
-tnoremap <silent> <m-v> <c-\><c-n><cmd>call term#Toggle(1)<cr>
-tnoremap <silent> <m-w> <c-\><c-n><cmd>call term#Focus()<cr>
-
-" use ctrl-r to access registers in terminal insert mode
-" TODO: this doesn't work in vim's terminal (was originally configured for neovim)
-tnoremap <expr> <c-r> '<c-\><c-n>"' .. nr2char(getchar()) .. 'pi'
-
-" use ctrl-r ctrl-r to reverse-history search
-tnoremap <c-r><c-r> <c-r>
+tnoremap <silent> <m-s> <cmd>call term#Toggle(0)<cr>
+tnoremap <silent> <m-v> <cmd>call term#Toggle(1)<cr>
 
 augroup terminal_config
   autocmd!

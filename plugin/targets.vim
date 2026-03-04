@@ -1,3 +1,5 @@
+" NOTE: ciw after opening a fold deletes the entire fold (https://github.com/wellle/targets.vim/issues/247)
+
 " both growing and seeking will work on the largest available count if a too large count it given
 let g:targets_gracious = 1
 
