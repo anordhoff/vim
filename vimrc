@@ -1,20 +1,21 @@
 " vim: foldmethod=marker foldlevel=0
 
-" TODO: ciw after opening a fold deletes the entire fold — known targets.vim bug (github.com/wellle/targets.vim/issues/247)
+" TODO: ciw after opening a fold deletes the entire fold — known targets.vim bug (https://github.com/wellle/targets.vim/issues/247)
+" TODO: keympas such as `gx` and commands such as `:Open https://google.com` flash the vim screen
 
 " --- settings --- {{{
 
 set notermguicolors     " disable 24-bit colors
 set t_Co=16             " use the 16 color palette
 set number              " enable line numbers
-set noshowmode          " hide the mode from the bottom row
 set noincsearch         " do not immediately jump to first search hit
 set ignorecase          " case-insensitive searching...
 set smartcase           " ...but not if the search contains a capital letter
-set nowrapscan          " do not wrap searches around the end of the file
 set splitright          " split vertical windows to the right of current window
 set splitbelow          " split horizontal windows below current window
 set hidden              " allow switching between buffers without saving
+set autoread            " automatically read file changes
+set noshowmode          " hide the mode from the bottom row
 set laststatus=2        " always show a statusline
 set textwidth=120       " wrap lines at 120 characters
 set formatoptions=jwcql " don't auto-wrap text; format comments with gq
@@ -25,8 +26,8 @@ set foldmethod=syntax   " fold based on syntax highlighting items
 set foldlevelstart=99   " don't automatically close folds
 set mouse=a             " enable the use of the mouse (for scrolling)
 set mmp=10000           " prevent memory errors when loading large buffers
-set timeoutlen=5000     " make complicated commands more forgiving to type
-set ttimeoutlen=1       " minimal delay for escape key presses
+" set timeoutlen=5000     " make complicated commands more forgiving to type
+set ttimeoutlen=10      " minimal delay for escape key presses
 
 " enable filetype detection and loading of plugin and indent files
 filetype plugin indent on
@@ -40,7 +41,7 @@ if &loadplugins
 endif
 
 " disable netrw in favor of vim-dirvish
-let g:loaded_netrw       = 1
+let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
 
 " check if running on a server or container
@@ -54,9 +55,13 @@ let &t_EI = "\e[2 q"
 let &t_TI = "\e[>4;2m"
 let &t_TE = "\e[>4;m"
 
+" enable focus-event tracking
+let &t_fe = "\e[?1004h"
+let &t_fd = "\e[?1004l"
+
 " enable undercurl support with cterm
-let &t_Cs = "\e[4:3m"
 let &t_Ce = "\e[4:0m"
+let &t_Cs = "\e[4:3m"
 
 " enable undercurl highlighting with ctermul
 let &t_AU = "\e[58;5;%dm"
@@ -154,19 +159,26 @@ nnoremap <leader>s :sp **/*
 nnoremap <leader>v :vs **/*
 nnoremap <leader>b :b **/*
 
+" TODO: make this mapping fuzzy search :h fuzzy-file-picker
+nnoremap <leader>f :f **/*
+
+" grep current buffer or all files in current directory
+" TODO: is there a better way to move the cursor between // than <left><left>...
+nnoremap <leader>g :vimgrep //j **/* \| copen \| wincmd p<left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left>
+nnoremap <leader>l :lvimgrep //j % \| lopen \| wincmd p<left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left>
+
 " clear search highlighting
 nnoremap <silent> <c-l> :nohlsearch<cr>
 
 " jump to the definition in the tag file
 nnoremap gd <c-]>
 
+" trigger tag/omni completion using <tab>
+inoremap <expr> <tab> completion#TabComplete(0)
+inoremap <expr> <s-tab> completion#TabComplete(1)
+
 " maximize the current window
 nnoremap <silent> <leader>z :tabnew %<cr><c-o>
-
-" grep current buffer or all files in current directory
-" TODO: is there a better way to move the cursor between // than <left><left>...
-nnoremap <leader>g :vimgrep //j **/* \| copen \| wincmd p<left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left>
-nnoremap <leader>l :lvimgrep //j % \| lopen \| wincmd p<left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left><left>
 
 " toggle the quickfix list window and maximize window to the width of vim
 nnoremap <silent> <m-q> :call quickfix#ToggleQuickfixlist()<cr>
@@ -180,10 +192,6 @@ nnoremap gl <cmd>set diffopt-=linematch:40<bar>diffget //3<bar>set diffopt+=line
 
 " copy the absolute path of the current file to the unnamed register
 nnoremap <leader>y :let @" = expand("%:p")<cr>
-
-" trigger tag/omni completion using <tab>
-inoremap <expr> <tab> completion#TabComplete(0)
-inoremap <expr> <s-tab> completion#TabComplete(1)
 
 " scrolling with the mouse or trackpad moves the screen instead of the cursor
 noremap <scrollwheelup> <c-y>
@@ -329,6 +337,8 @@ endfunction
 " }}}
 " --- tabline --- {{{
 
+" TODO: can the tabline be simplified to mostly use the default tabline, but also print the full relative path of the 
+" file (rather than shortening the directories to just a single char)
 set tabline=%!TabLine()
 
 function TabLine()
@@ -383,20 +393,11 @@ nnoremap <silent> <m-t> <cmd>call notebook#Todo(g:todofile)<cr>
 " prevent notebook pages from being added to the buffer list
 augroup notebook_config
   autocmd!
-  autocmd BufNewFile,BufRead ~/notebook/*.txt,~/notebook/*.md setlocal nobuflisted
+  autocmd BufNewFile,BufRead ~/notebook/**/*.txt,~/notebook/**/*.md setlocal nobuflisted
 augroup END
 
 " }}}
 " --- terminal --- {{{
-
-" start a server so terminal commands can open files in this vim instance
-" if empty(v:servername) && has('clientserver')
-"   call remote_startserver('VIM')
-" endif
-" if !empty(v:servername)
-"   let $EDITOR = 'vimx --servername ' .. v:servername .. ' --remote-wait'
-"   let $VISUAL = 'vimx --servername ' .. v:servername .. ' --remote-wait'
-" endif
 
 " open or focus the terminal window
 nnoremap <silent> <m-s> <cmd>call term#Toggle(0)<cr>
@@ -409,6 +410,7 @@ tnoremap <silent> <m-v> <c-\><c-n><cmd>call term#Toggle(1)<cr>
 tnoremap <silent> <m-w> <c-\><c-n><cmd>call term#Focus()<cr>
 
 " use ctrl-r to access registers in terminal insert mode
+" TODO: this doesn't work in vim's terminal (was originally configured for neovim)
 tnoremap <expr> <c-r> '<c-\><c-n>"' .. nr2char(getchar()) .. 'pi'
 
 " use ctrl-r ctrl-r to reverse-history search
