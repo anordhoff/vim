@@ -13,38 +13,32 @@ endfunction
 let g:test#custom_transformations = {'delve': function('DelveTransformVerbose')}
 
 " keymaps
-nnoremap <silent> <leader>t :TestNearest<cr>
-nnoremap <silent> <leader>T :TestNearest -v<cr>
-" TODO: conflicts with :lvimgrep mappings
-" nnoremap <silent> <leader>l :TestLast<cr>
-nnoremap <silent> <leader>p :TestFile<cr>
+nnoremap <silent> <leader>tt :TestNearest<cr>
+nnoremap <silent> <leader>tv :TestNearest -v<cr>
+nnoremap <silent> <leader>tc :TestClass<cr>
+nnoremap <silent> <leader>tf :TestFile<cr>
+nnoremap <silent> <leader>ta :TestSuite<cr>
+nnoremap <silent> <leader>tl :TestLast<cr>
+nnoremap <silent> <leader>tg :TestVisit<cr>
 
+" delve keymaps
 augroup test_config
   autocmd!
-
-  " debugging keymaps
-  autocmd Filetype go nnoremap <silent> z<cr> :call DebugNearest('delve')<cr>
-  autocmd Filetype go nnoremap <silent> Z<cr> :call DebugFile('delve')<cr>
-
-  " coverage commands
-  autocmd Filetype go command! Cover :silent !go tool cover -html=coverage.out
-  autocmd Filetype go command! Coverfunc :tabedit /tmp/coverage.func | setlocal noreadonly | :%d | execute 'read !go tool cover -func=coverage.out' | :1d | :silent write | setlocal readonly
+  autocmd Filetype go nnoremap <silent> z<cr> :call Debug('delve', false)<cr>
+  autocmd Filetype go nnoremap <silent> Z<cr> :call Debug('delve', true)<cr>
 augroup END
 
-" spawn a debugging terminal session in verbose mode on the nearest test
-function! DebugNearest(runner)
+" spawn a delve terminal in verbose mode
+function! Debug(runner, file)
   let g:test#go#runner = a:runner
   let g:test#transformation = a:runner
-  TestNearest -strategy=spawn
-  unlet g:test#transformation
-  unlet g:test#go#runner
-endfunction
 
-" spawn a debugging terminal session in verbose mode on the current test file/package
-function! DebugFile(runner)
-  let g:test#go#runner = a:runner
-  let g:test#transformation = a:runner
-  TestFile -strategy=spawn
+  if a:file
+    TestFile -strategy=spawn
+  else
+    TestNearest -strategy=spawn
+  endif
+
   unlet g:test#transformation
   unlet g:test#go#runner
 endfunction

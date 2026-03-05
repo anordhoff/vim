@@ -259,7 +259,6 @@ hi DiffRemoved                   cterm=none        ctermfg=1        ctermbg=none
 " --------------------------------------
 " lsp
 " --------------------------------------
-" TODO: custom highlights are overwritten by the lsp plugin
 hi LspPopup                      cterm=none        ctermfg=7        ctermbg=none
 hi LspPopupBorder                cterm=none        ctermfg=0        ctermbg=none
 hi LspDiagInlineError            cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=1
