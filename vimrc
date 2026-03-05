@@ -266,10 +266,10 @@ command! -nargs=1 Clear call registers#Clear(<q-args>)
 " --- statusline --- {{{
 
 " custom statusline (requires additional StatusLineActive and StatusLineInactive highlight groups)
-set statusline=%!Statusline(g:statusline_winid)
+set statusline=%!StatusLine(g:statusline_winid)
 
 " assemble the custom statusline for most filetypes
-function Statusline(winid)
+function StatusLine(winid)
   let statusline   = ' '                            " left padding
   let statusline ..= statusline#Background(a:winid) " set status line background color
   let statusline ..= '%{statusline#BufferNr()} '    " buffer number
@@ -296,39 +296,55 @@ augroup END
 " }}}
 " --- tabline --- {{{
 
-" TODO: can the tabline/tablael be simplified to mostly use the default tabline, but also print the full relative path of the file (rather than shortening the directories to just a single char)
 set tabline=%!TabLine()
 
 function TabLine()
-  let line = '%#StatusLine#' .. ' ' .. '%#TabLine#'
+  let tabline = '%#StatusLine#' .. ' ' .. '%#TabLine#'
   for tab in range(tabpagenr('$'))
     if tab + 1 == tabpagenr()
-      let line ..= '%#TabLineSel#'
+      let tabline ..= '%#TabLineSel#'
     else
-      let line ..= '%#TabLine#'
+      let tabline ..= '%#TabLine#'
     endif
-    let line ..= ' %{TabLabel(' .. (tab + 1) .. ')} '
+    let tabline ..= '%' .. (tab + 1) .. 'T'
+    let tabline ..= ' %{TabLabel(' .. (tab + 1) .. ')} '
   endfor
-  let line ..= '%#TabLineFill#%T' .. '%=%#StatusLine#' .. ' '
-  return line
+  let tabline ..= '%#TabLineFill#%T' .. '%=%#StatusLine#' .. ' '
+  return tabline
 endfunction
 
 function TabLabel(n)
-  let winnr = tabpagewinnr(a:n)
   let buflist = tabpagebuflist(a:n)
+  let winnr = tabpagewinnr(a:n)
   let bufname = bufname(buflist[winnr - 1])
   let filetype = getbufvar(buflist[winnr - 1], '&filetype')
+
+  " modified label
+  let modified = ' '
+  for bufnr in buflist
+    if getbufvar(bufnr, '&modified')
+      let modified = '+'
+      break
+    endif
+  endfor
+
+  " window count
+  let wincount = tabpagewinnr(a:n, '$') > 1 ? tabpagewinnr(a:n, '$') .. ':' : ''
+
+  " handle special buffer types
+  let name = ''
   if bufname == ''
-    return '[No Name]'
+    let name = '[No Name]'
   elseif filetype == 'help'
-    return 'help'
+    let name = 'help'
   elseif filetype == 'dirvish'
-    return 'dirvish'
+    let name = 'dirvish'
   elseif bufname =~ '^fugitive://'
-    return 'fugitive://' .. fnamemodify(FugitiveReal(bufname), ':.')
+    let name = 'fugitive://' .. fnamemodify(FugitiveReal(bufname), ':.')
   else
-    return bufname
+    let name = l:bufname
   endif
+  return wincount .. name .. modified
 endfunction
 
 " }}}
