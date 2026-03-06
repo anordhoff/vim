@@ -84,7 +84,11 @@ hi StatusLine                    cterm=none        ctermfg=7        ctermbg=none
 hi StatusLineNC                  cterm=none        ctermfg=7        ctermbg=none
 hi! link StatusLineTerm          Statusline
 hi! link StatusLineTermNC        StatusLineNC
-hi StatusLineActive              cterm=none        ctermfg=7        ctermbg=22
+if g:is_remote
+  hi StatusLineActive              cterm=none        ctermfg=7        ctermbg=22
+else
+  hi StatusLineActive              cterm=none        ctermfg=7        ctermbg=22
+endif
 hi StatusLineInactive            cterm=none        ctermfg=7        ctermbg=19
 hi WildMenu                      cterm=none        ctermfg=5        ctermbg=22
 hi Question                      cterm=none        ctermfg=2        ctermbg=none
@@ -104,11 +108,11 @@ hi CurSearch                     cterm=reverse     ctermfg=13       ctermbg=none
 " completion menu
 " --------------------------------------
 hi Pmenu                         cterm=none        ctermfg=none     ctermbg=19
-hi PmenuSel                      cterm=none        ctermfg=none     ctermbg=22
+hi PmenuSel                      cterm=none        ctermfg=none     ctermbg=23
 hi PmenuSbar                     cterm=none        ctermfg=none     ctermbg=0
 hi PmenuThumb                    cterm=none        ctermfg=none     ctermbg=8
 hi PmenuMatch                    cterm=none        ctermfg=6        ctermbg=19
-hi PmenuMatchSel                 cterm=none        ctermfg=none     ctermbg=22
+hi PmenuMatchSel                 cterm=none        ctermfg=6        ctermbg=23
 
 " --------------------------------------
 " quickfix

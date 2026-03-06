@@ -1,5 +1,8 @@
 " vim: foldmethod=marker foldlevel=0
 
+" TODO: lsp - only trigger autocomplete when typing a '.' char in go
+" TODO: packadd startuptime; :StartupTime launches a gvim window
+
 " --- settings --- {{{
 
 set notermguicolors     " disable 24-bit colors
@@ -156,9 +159,6 @@ nnoremap <leader>s :sp **/*
 nnoremap <leader>v :vs **/*
 nnoremap <leader>b :b **/*
 
-" TODO: make this mapping fuzzy search :h fuzzy-file-picker
-nnoremap <leader>f :f **/*
-
 " grep the current buffer or all files in the current directory
 nnoremap <leader>g :vimgrep //j **/* \| copen \| wincmd p<c-\>e[setcmdpos(10), getcmdline()][1]<cr>
 nnoremap <leader>l :lvimgrep //j % \| lopen \| wincmd p<c-\>e[setcmdpos(11), getcmdline()][1]<cr>
@@ -213,54 +213,44 @@ inoremap <middlemouse> <nop>
 command! -nargs=1 Clear call registers#Clear(<q-args>)
 
 " }}}
-" --- TODO: fuzzy file search and fuzzy grep --- {{{
+" --- TODO: fuzzy-file-picker and live-grep --- {{{
 
-" autocmd CmdlineChanged [:\/\?] call wildtrigger()
-" set wildmode=noselect:lastused,full
-" set wildoptions=pum
+" fuzzy file picker
+set findfunc=Find
+func Find(arg, _)
+  if empty(s:filescache)
+    if isdirectory('.git')
+      let s:filescache = systemlist('git ls-files')
+      for pat in split(&wildignore, ',')
+        call filter(s:filescache, {_, f -> ('/' .. f) !~# glob2regpat(pat)})
+      endfor
+    else
+      let s:filescache = globpath('.', '**', 0, 1)
+      call filter(s:filescache, '!isdirectory(v:val)')
+      call map(s:filescache, "fnamemodify(v:val, ':.')")
+    endif
+  endif
+  return a:arg == '' ? s:filescache : matchfuzzy(s:filescache, a:arg)
+endfunc
+let s:filescache = []
 
-" " :h fuzzy-file-picker
-" set findfunc=Find
-" func Find(arg, _)
-"   if empty(s:filescache)
-"     let s:filescache = globpath('.', '**', 1, 1)
-"     call filter(s:filescache, '!isdirectory(v:val)')
-"     call map(s:filescache, "fnamemodify(v:val, ':.')")
-"   endif
-"   return a:arg == '' ? s:filescache : matchfuzzy(s:filescache, a:arg)
-" endfunc
-" let s:filescache = []
-" autocmd CmdlineEnter : let s:filescache = []
-" nnoremap <leader>f :find
+nnoremap <leader>f :find<space>
 
-" command! -nargs=+ -complete=customlist,<SID>Grep
-"   \ Grep call <SID>VisitFile()
+" enable autocompletion when using :find or :Grep
+augroup autocompletion_config
+  autocmd!
+  autocmd CmdlineEnter [\:] let s:filescache = []
+  autocmd CmdlineChanged [\:] if getcmdline() =~ '^find\s' | call wildtrigger() | endif
+  autocmd CmdlineChanged [\:] if getcmdline() =~ '^Grep\s' | call wildtrigger() | endif
+  autocmd CmdlineEnter [\:] if getcmdline() =~ '^find\s' | set wildmode=noselect:lastused,full | endif
+  autocmd CmdlineEnter [\:] if getcmdline() =~ '^Grep\s' | set wildmode=noselect:lastused,full | endif
+augroup END
 
-" func s:Grep(arglead, cmdline, cursorpos)
-"   if match(&grepprg, '\$\*') == -1 | let &grepprg ..= ' $*' | endif
-"   let cmd = substitute(&grepprg, '\$\*', shellescape(escape(a:arglead, '\')), '')
-"   return len(a:arglead) > 1 ? systemlist(cmd) : []
-" endfunc
-
-" func s:VisitFile()
-"   let item = getqflist(#{lines: [s:selected]}).items[0]
-"   let pos  = '[0,\ item.lnum,\ item.col,\ 0]'
-"   exe $':b +call\ setpos(".",\ {pos}) {item.bufnr}'
-"   call setbufvar(item.bufnr, '&buflisted', 1)
-" endfunc
-
-" autocmd CmdlineLeavePre :
-"       \ if get(cmdcomplete_info(), 'matches', []) != [] |
-"       \   let s:info = cmdcomplete_info() |
-"       \   if getcmdline() =~ '^\s*fin\%[d]\s' && s:info.selected == -1 |
-"       \     call setcmdline($'find {s:info.matches[0]}') |
-"       \   endif |
-"       \   if getcmdline() =~ '^\s*Grep\s' |
-"       \     let s:selected = s:info.selected != -1
-"       \         ? s:info.matches[s:info.selected] : s:info.matches[0] |
-"       \     call setcmdline(s:info.cmdline_orig) |
-"       \   endif |
-"       \ endif
+" preserve normal command-line history navigation
+cnoremap <expr> <up>   wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
+cnoremap <expr> <down> wildmenumode() ? "\<c-e>\<down>" : "\<down>"
+cnoremap <expr> <c-p>  wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
+cnoremap <expr> <c-n>  wildmenumode() ? "\<c-e>\<down>" : "\<down>"
 
 " }}}
 " --- statusline --- {{{
