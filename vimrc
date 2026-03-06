@@ -93,6 +93,10 @@ set wildignore+=tags,*.tags,.git/**,**/bin/**,**/vendor/**,**/node_modules/**,**
 " ignore files and directories listed in .gitignore
 let &wildignore ..= gitignore#WildignoreList('.gitignore')
 
+" use ripgrep as the external grep program
+set grepprg=rg\ --vimgrep\ -g='!tags'\ -g='!*.tags'\ -g='!.git/**'\ -g='!**/bin/**'\ -g='!**/vendor/**'\ -g='!**/node_modules/**'\ -g='!**/pack/*/opt/**'\ -g='!**/pack/*/start/**'\ -g='!**/tmux/plugins/**'
+set grepformat=%f:%l:%c:%m
+
 " make line wrapping look nicer, but don't wrap by default
 set nowrap
 set linebreak
@@ -139,6 +143,20 @@ augroup cursor_config
   autocmd BufRead * autocmd FileType <buffer> ++once if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exec 'normal! g`"zz' | endif
 augroup END
 
+" enable fuzzy autocompletion when using :find or :Grep
+augroup fuzzy_config
+  autocmd!
+
+  autocmd CmdlineEnter [\:] let g:filescache = []
+  autocmd CmdlineLeave [\:] set wildmode=longest:full,full
+  autocmd CmdlineLeavePre [\:] call fuzzy#CmdlineLeavePre()
+
+  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*fin\%[d]\s' | call wildtrigger() | endif
+  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*fin\%[d]\s' | set wildmode=noselect:lastused,full | endif
+  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*Grep\s' | call wildtrigger() | endif
+  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*Grep\s' | set wildmode=noselect:lastused,full | endif
+augroup END
+
 " }}}
 " --- mappings --- {{{
 
@@ -153,15 +171,29 @@ inoremap <c-r>* <c-r><c-r>*
 cnoremap <c-p> <up>
 cnoremap <c-n> <down>
 
+" preserve history navigation when autocompletion menu is open
+cnoremap <expr> <up>   wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
+cnoremap <expr> <down> wildmenumode() ? "\<c-e>\<down>" : "\<down>"
+cnoremap <expr> <c-p>  wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
+cnoremap <expr> <c-n>  wildmenumode() ? "\<c-e>\<down>" : "\<down>"
+
 " file and buffer navigation
 nnoremap <leader>e :e **/*
 nnoremap <leader>s :sp **/*
 nnoremap <leader>v :vs **/*
 nnoremap <leader>b :b **/*
 
+" fuzzy-file-picker
+set findfunc=fuzzy#Find
+let g:fuzzy_filescache = []
+nnoremap <leader>f :find<space>
+
 " grep the current buffer or all files in the current directory
-nnoremap <leader>g :vimgrep //j **/* \| copen \| wincmd p<c-\>e[setcmdpos(10), getcmdline()][1]<cr>
-nnoremap <leader>l :lvimgrep //j % \| lopen \| wincmd p<c-\>e[setcmdpos(11), getcmdline()][1]<cr>
+nnoremap gp :vimgrep //j **/* \| copen \| wincmd p<c-\>e[setcmdpos(10), getcmdline()][1]<cr>
+nnoremap gb :lvimgrep //j % \| lopen \| wincmd p<c-\>e[setcmdpos(11), getcmdline()][1]<cr>
+
+" live-grep
+nnoremap <leader>g :Grep<space>
 
 " clear search highlighting
 nnoremap <silent> <c-l> :nohlsearch<cr>
@@ -209,48 +241,14 @@ inoremap <middlemouse> <nop>
 " }}}
 " --- commands --- {{{
 
+" live-grep
+command -nargs=+ -complete=customlist,fuzzy#Grep Grep call fuzzy#VisitFile()
+
 " clear the specified register
-command! -nargs=1 Clear call registers#Clear(<q-args>)
+command -nargs=1 Clear call misc#Clear(<q-args>)
 
-" }}}
-" --- TODO: fuzzy-file-picker and live-grep --- {{{
-
-" fuzzy file picker
-set findfunc=Find
-func Find(arg, _)
-  if empty(s:filescache)
-    if isdirectory('.git')
-      let s:filescache = systemlist('git ls-files')
-      for pat in split(&wildignore, ',')
-        call filter(s:filescache, {_, f -> ('/' .. f) !~# glob2regpat(pat)})
-      endfor
-    else
-      let s:filescache = globpath('.', '**', 0, 1)
-      call filter(s:filescache, '!isdirectory(v:val)')
-      call map(s:filescache, "fnamemodify(v:val, ':.')")
-    endif
-  endif
-  return a:arg == '' ? s:filescache : matchfuzzy(s:filescache, a:arg)
-endfunc
-let s:filescache = []
-
-nnoremap <leader>f :find<space>
-
-" enable autocompletion when using :find or :Grep
-augroup autocompletion_config
-  autocmd!
-  autocmd CmdlineEnter [\:] let s:filescache = []
-  autocmd CmdlineChanged [\:] if getcmdline() =~ '^find\s' | call wildtrigger() | endif
-  autocmd CmdlineChanged [\:] if getcmdline() =~ '^Grep\s' | call wildtrigger() | endif
-  autocmd CmdlineEnter [\:] if getcmdline() =~ '^find\s' | set wildmode=noselect:lastused,full | endif
-  autocmd CmdlineEnter [\:] if getcmdline() =~ '^Grep\s' | set wildmode=noselect:lastused,full | endif
-augroup END
-
-" preserve normal command-line history navigation
-cnoremap <expr> <up>   wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
-cnoremap <expr> <down> wildmenumode() ? "\<c-e>\<down>" : "\<down>"
-cnoremap <expr> <c-p>  wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
-cnoremap <expr> <c-n>  wildmenumode() ? "\<c-e>\<down>" : "\<down>"
+" get the name of the highlight group under the cursor
+command Inspect call misc#SynStack()
 
 " }}}
 " --- statusline --- {{{

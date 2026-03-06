@@ -3,7 +3,7 @@ let test#go#gotest#options = '-fullpath -coverprofile=coverage.out'
 let g:test#runner_commands = ['GoTest', 'Delve']
 
 " transformation that enables verbose logging for delve
-function! DelveTransformVerbose(cmd) abort
+function DelveTransformVerbose(cmd) abort
   if a:cmd =~ '--'
     return a:cmd .. ' -test.v'
   else
@@ -29,7 +29,7 @@ augroup test_config
 augroup END
 
 " spawn a delve terminal in verbose mode
-function! Debug(runner, file)
+function Debug(runner, file)
   let g:test#go#runner = a:runner
   let g:test#transformation = a:runner
 

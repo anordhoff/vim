@@ -1,5 +1,5 @@
 " change the completeopt option when manually triggering completion
-function! completion#TabComplete(shift)
+function completion#TabComplete(shift)
   setlocal completeopt=menu,noselect,longest,preview
   if pumvisible()
     return a:shift ? "\<c-p>" : "\<c-n>"
