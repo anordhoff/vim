@@ -1,5 +1,9 @@
 " vim: foldmethod=marker foldlevel=0
 
+" TODO: what's the best way to manage "formatoptions"? Some filetypes overwrite "formatoptions=jwcql" that is set in 
+" vimrc. Should I update formatoptions at after/ftplugin/*.vim for those filetypes? Is "formatoptions=jwcql" even worth 
+" setting in vimrc?
+
 " --- settings --- {{{
 
 set notermguicolors     " disable 24-bit colors
@@ -23,7 +27,6 @@ set foldmethod=syntax   " fold based on syntax highlighting items
 set foldlevelstart=99   " don't automatically close folds
 set mouse=a             " enable the use of the mouse (for scrolling)
 set mmp=10000           " prevent memory errors when loading large buffers
-" set timeoutlen=5000     " make complicated commands more forgiving to type
 set ttimeoutlen=10      " minimal delay for escape key presses
 
 " enable filetype detection and loading of plugin and indent files
@@ -112,7 +115,7 @@ set packpath^=~/.config/vim,~/jobfiles/vim
 set packpath+=~/jobfiles/vim/after
 
 " load custom colorscheme
-colorscheme colorscheme
+colorscheme mycolorscheme
 
 " }}}
 " --- augroups --- {{{
@@ -146,7 +149,6 @@ augroup END
 " enable fuzzy autocompletion when using :find or :Grep
 augroup fuzzy_config
   autocmd!
-
   autocmd CmdlineEnter [\:] let g:filescache = []
   autocmd CmdlineLeave [\:] set wildmode=longest:full,full
   autocmd CmdlineLeavePre [\:] call fuzzy#CmdlineLeavePre()
@@ -171,7 +173,7 @@ inoremap <c-r>* <c-r><c-r>*
 cnoremap <c-p> <up>
 cnoremap <c-n> <down>
 
-" preserve history navigation when autocompletion menu is open
+" preserve history navigation when cmdline-autocompletion menu is open
 cnoremap <expr> <up>   wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
 cnoremap <expr> <down> wildmenumode() ? "\<c-e>\<down>" : "\<down>"
 cnoremap <expr> <c-p>  wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
@@ -189,8 +191,8 @@ let g:fuzzy_filescache = []
 nnoremap <leader>f :find<space>
 
 " grep the current buffer or all files in the current directory
-nnoremap <leader>g :vimgrep //j **/* \| copen \| wincmd p<c-\>e[setcmdpos(10), getcmdline()][1]<cr>
 nnoremap <leader>l :lvimgrep //j % \| lopen \| wincmd p<c-\>e[setcmdpos(11), getcmdline()][1]<cr>
+nnoremap <leader>g :vimgrep //j **/* \| copen \| wincmd p<c-\>e[setcmdpos(10), getcmdline()][1]<cr>
 
 " live-grep (ripgrep)
 nnoremap <leader>r :Grep<space>
