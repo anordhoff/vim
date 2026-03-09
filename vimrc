@@ -1,8 +1,5 @@
 " vim: foldmethod=marker foldlevel=0
 
-" TODO: lsp - only trigger autocomplete when typing a '.' char in go
-" TODO: packadd startuptime; :StartupTime launches a gvim window
-
 " --- settings --- {{{
 
 set notermguicolors     " disable 24-bit colors
@@ -44,8 +41,11 @@ endif
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
 
-" check if running on a server or container
-let g:is_remote = !empty($SSH_TTY) || !empty($container)
+" the presence of $TMUX implies we are running on a workstation
+let g:is_workstation = exists('$TMUX')
+
+" check if we are running within a dev container
+let g:is_container = exists('$container')
 
 " set the cursor shape to a bar in insert mode
 let &t_SI = "\e[6 q"

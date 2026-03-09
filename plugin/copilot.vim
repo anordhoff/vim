@@ -1,4 +1,4 @@
-if g:is_remote
+if !g:is_workstation
   finish
 endif
 packadd copilot

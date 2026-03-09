@@ -77,24 +77,28 @@ hi TabLineFill                   cterm=none        ctermfg=none     ctermbg=19
 hi TabLineSel                    cterm=none        ctermfg=6        ctermbg=19
 
 " --------------------------------------
-" prompt / status
+" prompt
+" --------------------------------------
+hi WildMenu                      cterm=none        ctermfg=5        ctermbg=22
+hi Question                      cterm=none        ctermfg=2        ctermbg=none
+hi Title                         cterm=none        ctermfg=3        ctermbg=none
+hi ModeMsg                       cterm=none        ctermfg=7        ctermbg=none
+hi MoreMsg                       cterm=none        ctermfg=2        ctermbg=none
+
+" --------------------------------------
+" statusline
 " --------------------------------------
 " StatusLine and StatusLineNC are used for the bookends of the statusline
 hi StatusLine                    cterm=none        ctermfg=7        ctermbg=none
 hi StatusLineNC                  cterm=none        ctermfg=7        ctermbg=none
 hi! link StatusLineTerm          Statusline
 hi! link StatusLineTermNC        StatusLineNC
-if g:is_remote
-  hi StatusLineActive              cterm=none        ctermfg=7        ctermbg=22
-else
-  hi StatusLineActive              cterm=none        ctermfg=7        ctermbg=22
-endif
 hi StatusLineInactive            cterm=none        ctermfg=7        ctermbg=19
-hi WildMenu                      cterm=none        ctermfg=5        ctermbg=22
-hi Question                      cterm=none        ctermfg=2        ctermbg=none
-hi Title                         cterm=none        ctermfg=3        ctermbg=none
-hi ModeMsg                       cterm=none        ctermfg=7        ctermbg=none
-hi MoreMsg                       cterm=none        ctermfg=2        ctermbg=none
+if g:is_workstation
+  hi StatusLineActive            cterm=none        ctermfg=7        ctermbg=22
+else
+  hi StatusLineActive            cterm=none        ctermfg=7        ctermbg=21
+endif
 
 " --------------------------------------
 " file navigation / searching

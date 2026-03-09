@@ -1,7 +1,7 @@
-" TODO: set formatexpr= when on a file that supports formating
-if g:is_remote
+if !g:is_workstation && !g:is_container
   finish
 endif
+let g:load_lsp = 1
 
 let s:options = #{
   \   autoComplete: v:false,
@@ -24,7 +24,7 @@ autocmd User LspSetup call LspOptionsSet(s:options)
 
 let s:servers = [#{
   \   name: 'golang',
-  \   filetype: ['go', 'gomod'],
+  \   filetype: ['go', 'gomod', 'gowork', 'gotmpl'],
   \   path: 'gopls',
   \   args: ['serve'],
   \   syncInit: v:true
@@ -34,7 +34,7 @@ autocmd User LspSetup call LspAddServer(s:servers)
 augroup lsp_attach
   autocmd!
 
-  " keymaps
+  " normal mode keymaps
   autocmd User LspAttached nnoremap <silent><buffer> gd <cmd>LspGotoDefinition<cr>
   autocmd User LspAttached nnoremap <silent><buffer> gD <cmd>LspGotoDeclaration<cr>
   autocmd User LspAttached nnoremap <silent><buffer> grr <cmd>LspShowReferences<cr>
@@ -44,17 +44,19 @@ augroup lsp_attach
   autocmd User LspAttached nnoremap <silent><buffer> grt <cmd>LspGotoTypeDef<cr>
   autocmd User LspAttached nnoremap <silent><buffer> gO <cmd>LspDocumentSymbol<cr>
   autocmd User LspAttached nnoremap <silent><buffer> K <cmd>LspHover<cr>
-  autocmd User LspAttached inoremap <silent><buffer> <c-s> <cmd>LspShowSignature<cr>
   autocmd User LspAttached nnoremap <silent><buffer> <leader>F <cmd>LspFormat<cr>
   autocmd User LspAttached nnoremap <silent><buffer> [d <cmd>LspDiag prev<cr>
   autocmd User LspAttached nnoremap <silent><buffer> ]d <cmd>LspDiag next<cr>
   autocmd User LspAttached nnoremap <silent><buffer> <leader>d <cmd>LspDiag current<cr>
   autocmd User LspAttached nnoremap <silent><buffer> <leader>D <cmd>LspDiag show<cr>
 
-  " configure gq to use the language server when formatting
-  autocmd User LspAttached setlocal formatexpr=lsp#lsp#FormatExpr()
+  " insert mode keymaps
+  autocmd User LspAttached inoremap <silent><buffer> <c-s> <cmd>LspShowSignature<cr>
 
   " trigger completion when typing a '.' char
+  " TODO: is there an lsp-native way to trigger completion when typing a <class>. (basically, trigger on a period char)
   autocmd User LspAttached inoremap <buffer> . .<c-x><c-o>
 
+  " configure gq to use the language server when formatting
+  autocmd User LspAttached setlocal formatexpr=lsp#lsp#FormatExpr()
 augroup END 

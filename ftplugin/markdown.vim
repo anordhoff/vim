@@ -11,17 +11,11 @@ nnoremap <buffer><silent> gqq :<c-u>call markdown#Renumber(line('.'), line('.') 
 nnoremap <buffer><silent> gq :set opfunc=markdown#RenumberOp<cr>g@
 xnoremap <buffer><silent> gq :<c-u>call markdown#Renumber(line("'<"), line("'>"))<cr>
 
-
-" lazy load markdown-preview
-if g:is_remote
+if !g:loaded_markdown_preview
   finish
-endif
-if !exists("g:loaded_markdown_preview")
-  packadd markdown-preview
-  let g:loaded_markdown_preview = 1
 endif
 
 " shorter commands
-command Preview :MarkdownPreview
-command PreviewStop :MarkdownPreviewStop
-command PreviewToggle :MarkdownPreviewToggle
+command -buffer Preview :MarkdownPreview
+command -buffer PreviewStop :MarkdownPreviewStop
+command -buffer PreviewToggle :MarkdownPreviewToggle
