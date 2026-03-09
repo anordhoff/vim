@@ -5,7 +5,7 @@ endfunction
 
 " hide buffer number if buffer sets nobuflisted
 function statusline#BufferNr()
-  return &buflisted ? ' [' .. bufnr('%') .. '] ' : ''
+  return &buflisted ? ' [%n] ' : ''
 endfunction
 
 " noplugin flag if running with --noplugin set
@@ -15,7 +15,7 @@ endfunction
 
 " correct padding when there is no filetype
 function statusline#Filetype()
-  return &filetype != '' ? ' [' .. &filetype .. '] ' : ''
+  return &filetype != '' ? ' %y ' : ''
 endfunction
 
 " quickfix and location list statusline

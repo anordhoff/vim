@@ -189,11 +189,11 @@ let g:fuzzy_filescache = []
 nnoremap <leader>f :find<space>
 
 " grep the current buffer or all files in the current directory
-nnoremap gp :vimgrep //j **/* \| copen \| wincmd p<c-\>e[setcmdpos(10), getcmdline()][1]<cr>
-nnoremap gb :lvimgrep //j % \| lopen \| wincmd p<c-\>e[setcmdpos(11), getcmdline()][1]<cr>
+nnoremap <leader>g :vimgrep //j **/* \| copen \| wincmd p<c-\>e[setcmdpos(10), getcmdline()][1]<cr>
+nnoremap <leader>l :lvimgrep //j % \| lopen \| wincmd p<c-\>e[setcmdpos(11), getcmdline()][1]<cr>
 
-" live-grep
-nnoremap <leader>g :Grep<space>
+" live-grep (ripgrep)
+nnoremap <leader>r :Grep<space>
 
 " clear search highlighting
 nnoremap <silent> <c-l> :nohlsearch<cr>
@@ -260,7 +260,7 @@ set statusline=%!StatusLine(g:statusline_winid)
 function StatusLine(winid)
   let statusline   = ' '                            " left padding
   let statusline ..= statusline#Background(a:winid) " set status line background color
-  let statusline ..= '%{statusline#BufferNr()} '    " buffer number
+  let statusline ..= '%{%statusline#BufferNr()%} '  " buffer number
   let statusline ..= '%f  '                         " filepath
   let statusline ..= '%{statusline#NopluginFlag()}' " noplugin flag
   let statusline ..= '%H%W%R%M'                     " help,preview,read-only, and modified flags
@@ -268,7 +268,7 @@ function StatusLine(winid)
   let statusline ..= '%7(%c%V%)'                    " byte index, virtual column number
   let statusline ..= '  :  '                        " separator and padding
   let statusline ..= '%2l/%L '                      " current line number/total line count
-  let statusline ..= '%{statusline#Filetype()}'     " filetype
+  let statusline ..= '%{%statusline#Filetype()%}'   " filetype
   let statusline ..= '%* '                          " reset background color; right padding
   return statusline
 endfunction

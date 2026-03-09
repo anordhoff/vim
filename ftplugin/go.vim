@@ -9,3 +9,6 @@ command Lint :Dispatch golangci-lint run --show-stats=false --output.text.print-
 " show test coverage
 autocmd Filetype go command Cover :silent !go tool cover -html=coverage.out
 autocmd Filetype go command Coverfunc :tabedit /tmp/coverage.func | setlocal noreadonly | :%d | execute 'read !go tool cover -func=coverage.out' | :1d | :silent write | setlocal readonly
+
+" load the lsp plugin
+packadd lsp
