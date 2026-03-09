@@ -24,21 +24,6 @@ nnoremap <silent> <leader>tg :TestVisit<cr>
 " delve keymaps
 augroup test_config
   autocmd!
-  autocmd Filetype go nnoremap <silent> z<cr> :call Debug('delve', false)<cr>
-  autocmd Filetype go nnoremap <silent> Z<cr> :call Debug('delve', true)<cr>
+  autocmd Filetype go nnoremap <silent> z<cr> :call debug#Delve(0)<cr>
+  autocmd Filetype go nnoremap <silent> Z<cr> :call debug#Delve(1)<cr>
 augroup END
-
-" spawn a delve terminal in verbose mode
-function Debug(runner, file)
-  let g:test#go#runner = a:runner
-  let g:test#transformation = a:runner
-
-  if a:file
-    TestFile -strategy=spawn
-  else
-    TestNearest -strategy=spawn
-  endif
-
-  unlet g:test#transformation
-  unlet g:test#go#runner
-endfunction

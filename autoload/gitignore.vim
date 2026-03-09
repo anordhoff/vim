@@ -10,8 +10,8 @@ function gitignore#WildignoreList(filename)
     if line =~ '^#' | con | endif
     if line == ''   | con | endif
     if line =~ '^!' | con | endif
-    if line =~ '/$' | let ignorestring .= "," . line . "*" | con | endif
-    let ignorestring .= "," . substitute(line, ' ', '\\ ', "g")
+    if line =~ '/$' | let ignorestring ..= "," .. line .. "*" | con | endif
+    let ignorestring ..= "," .. substitute(line, ' ', '\\ ', "g")
   endfor
   return ',' .. substitute(ignorestring, '^,', '', "g")
 endfunction

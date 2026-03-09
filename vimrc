@@ -1,9 +1,5 @@
 " vim: foldmethod=marker foldlevel=0
 
-" TODO: what's the best way to manage "formatoptions"? Some filetypes overwrite "formatoptions=jwcql" that is set in 
-" vimrc. Should I update formatoptions at after/ftplugin/*.vim for those filetypes? Is "formatoptions=jwcql" even worth 
-" setting in vimrc?
-
 " --- settings --- {{{
 
 set notermguicolors     " disable 24-bit colors
@@ -143,7 +139,7 @@ augroup END
 " restore cursor to previous location when opening a file
 augroup cursor_config
   autocmd!
-  autocmd BufRead * autocmd FileType <buffer> ++once if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exec 'normal! g`"zz' | endif
+  autocmd BufRead * autocmd FileType <buffer> ++once call misc#RestoreCursor()
 augroup END
 
 " enable fuzzy autocompletion when using :find or :Grep
@@ -153,10 +149,8 @@ augroup fuzzy_config
   autocmd CmdlineLeave [\:] set wildmode=longest:full,full
   autocmd CmdlineLeavePre [\:] call fuzzy#CmdlineLeavePre()
 
-  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*fin\%[d]\s' | call wildtrigger() | endif
-  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*fin\%[d]\s' | set wildmode=noselect:lastused,full | endif
-  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*Grep\s' | call wildtrigger() | endif
-  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*Grep\s' | set wildmode=noselect:lastused,full | endif
+  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*fin\%[d]\s' | set wildmode=noselect:lastused,full | call wildtrigger() | endif
+  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*Grep\s' | set wildmode=noselect:lastused,full | call wildtrigger() | endif
 augroup END
 
 " }}}
@@ -187,7 +181,6 @@ nnoremap <leader>b :b **/*
 
 " fuzzy-file-picker
 set findfunc=fuzzy#Find
-let g:fuzzy_filescache = []
 nnoremap <leader>f :find<space>
 
 " grep the current buffer or all files in the current directory

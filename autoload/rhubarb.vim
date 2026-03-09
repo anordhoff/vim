@@ -43,11 +43,11 @@ endfunction
 
 " create a Github pull request using the contents of the prbody buffer as the body
 function rhubarb#GhPrCreateWithBody(bodyFile)
-  let s:subject = shellescape(b:gh_pr_subject)
+  let subject = shellescape(b:gh_pr_subject)
   if b:gh_pr_draft
-    let l:cmd = "gh pr create --draft --title '" .. s:subject .. "' --body-file " .. a:bodyFile
+    let l:cmd = "gh pr create --draft --title '" .. subject .. "' --body-file " .. a:bodyFile
   else
-    let l:cmd = "gh pr create --title '" .. s:subject .. "' --body-file " .. a:bodyFile
+    let l:cmd = "gh pr create --title '" .. subject .. "' --body-file " .. a:bodyFile
   endif
   let l:output = system(l:cmd)
   if v:shell_error == 0

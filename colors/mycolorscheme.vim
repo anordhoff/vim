@@ -155,7 +155,6 @@ hi DiffText                      cterm=reverse     ctermfg=11       ctermbg=none
 " spelling
 " --------------------------------------
 
-hi DiffText                      cterm=reverse     ctermfg=11       ctermbg=none
 hi SpellBad                      cterm=none        ctermfg=1        ctermbg=none
 hi SpellCap                      cterm=none        ctermfg=3        ctermbg=none
 hi SpellLocal                    cterm=none        ctermfg=6        ctermbg=none

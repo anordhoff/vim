@@ -1,6 +1,3 @@
-" fix an issue with targets and folds (https://github.com/wellle/targets.vim/issues/233)
-call targets#sources#newFactories('')
-
 " both growing and seeking will work on the largest available count if a too large count it given
 let g:targets_gracious = 1
 
@@ -15,3 +12,7 @@ augroup targets_config
     \ 'Q': {'quote': [{'d': '`'}]},
     \ })
 augroup END
+
+" fix an issue with targets and folds (must be set after the augroup)
+" https://github.com/wellle/targets.vim/issues/233)
+call targets#sources#newFactories('')

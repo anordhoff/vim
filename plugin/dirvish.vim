@@ -1,5 +1,4 @@
 " sort directories first; ignore tags file and .git directory
-let g:dirvish_mode = ':sort ,^.*[\/], | :silent keeppatterns g/^tags$\|^.git\/$/d _'
 let g:dirvish_mode = ':sort ,^.*[\/], | :silent keeppatterns g/^tags$\|\.swp$\|^.git\//d _'
 
 " open the current working directory

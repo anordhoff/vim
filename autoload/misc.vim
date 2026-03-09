@@ -12,3 +12,12 @@ function misc#SynStack()
   endif
   echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunction
+
+function misc#RestoreCursor()
+  if &ft =~# 'commit\|rebase'
+    return
+  endif
+  if line("'\"") > 1 && line("'\"") <= line("$")
+    exec 'normal! g`"zz'
+  endif
+endfunction

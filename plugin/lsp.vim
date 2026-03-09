@@ -27,8 +27,15 @@ let s:servers = [#{
   \   filetype: ['go', 'gomod', 'gowork', 'gotmpl'],
   \   path: 'gopls',
   \   args: ['serve'],
-  \   syncInit: v:true
-  \ }]
+  \   syncInit: v:true,
+  \ },
+  \ #{
+  \   name: 'vim',
+  \   filetype: ['vim'],
+  \   path: 'vim-language-server',
+  \   args: ['--stdio'],
+  \ },
+  \ ]
 autocmd User LspSetup call LspAddServer(s:servers)
 
 augroup lsp_attach
@@ -54,9 +61,9 @@ augroup lsp_attach
   autocmd User LspAttached inoremap <silent><buffer> <c-s> <cmd>LspShowSignature<cr>
 
   " trigger completion when typing a '.' char
-  " TODO: is there an lsp-native way to trigger completion when typing a <class>. (basically, trigger on a period char)
+  " TODO: built-in trigger char autocompletion (https://github.com/yegappan/lsp/issues/781)
   autocmd User LspAttached inoremap <buffer> . .<c-x><c-o>
 
   " configure gq to use the language server when formatting
   autocmd User LspAttached setlocal formatexpr=lsp#lsp#FormatExpr()
-augroup END 
+augroup END

@@ -6,4 +6,4 @@ nnoremap g<cr> <cmd>Git<cr>
 command Glog :0Gllog
 
 " use git-jump from within vim
-command -bar -nargs=* GJump cexpr system('git jump --stdout ' . expand(<q-args>))
+command -bar -nargs=* GJump cexpr system('git jump --stdout ' .. expand(<q-args>))
