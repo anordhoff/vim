@@ -3,14 +3,14 @@ let test#go#gotest#options = '-fullpath -coverprofile=coverage.out'
 let g:test#runner_commands = ['GoTest', 'Delve']
 
 " transformation that enables verbose logging for delve
-function DelveTransformVerbose(cmd) abort
+function s:DelveTransformVerbose(cmd) abort
   if a:cmd =~ '--'
     return a:cmd .. ' -test.v'
   else
     return a:cmd .. ' -- -test.v'
   endif
 endfunction
-let g:test#custom_transformations = {'delve': function('DelveTransformVerbose')}
+let g:test#custom_transformations = {'delve': function('s:DelveTransformVerbose')}
 
 " keymaps
 nnoremap <silent> <leader>tt :TestNearest<cr>

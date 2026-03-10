@@ -17,10 +17,10 @@ function quickfix#ToggleLocationlist()
     if getloclist(0, {'winid': 0}).winid
       let height = winheight(getloclist(0, {'winid' : 1}).winid)
       lclose
-      let b:locationlist_height = height
+      let w:locationlist_height = height
     else
-      if exists('b:locationlist_height')
-        execute 'lopen ' .. b:locationlist_height
+      if exists('w:locationlist_height')
+        execute 'lopen ' .. w:locationlist_height
       else
         lopen
       endif

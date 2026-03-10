@@ -20,7 +20,6 @@ let s:options = #{
   \   showDiagWithSign: v:false,
   \   showDiagWithVirtualText: v:true,
   \ }
-autocmd User LspSetup call LspOptionsSet(s:options)
 
 let s:servers = [#{
   \   name: 'golang',
@@ -34,9 +33,13 @@ let s:servers = [#{
   \   filetype: ['vim'],
   \   path: 'vim-language-server',
   \   args: ['--stdio'],
-  \ },
-  \ ]
-autocmd User LspSetup call LspAddServer(s:servers)
+  \ }]
+
+augroup lsp_setup
+  autocmd!
+  autocmd User LspSetup call LspOptionsSet(s:options)
+  autocmd User LspSetup call LspAddServer(s:servers)
+augroup END
 
 augroup lsp_attach
   autocmd!
@@ -52,8 +55,8 @@ augroup lsp_attach
   autocmd User LspAttached nnoremap <silent><buffer> gO <cmd>LspDocumentSymbol<cr>
   autocmd User LspAttached nnoremap <silent><buffer> K <cmd>LspHover<cr>
   autocmd User LspAttached nnoremap <silent><buffer> <leader>F <cmd>LspFormat<cr>
-  autocmd User LspAttached nnoremap <silent><buffer> [d <cmd>LspDiag prev<cr>
-  autocmd User LspAttached nnoremap <silent><buffer> ]d <cmd>LspDiag next<cr>
+  autocmd User LspAttached nnoremap <silent><buffer> [d <cmd>LspDiag prev<cr><cmd>LspDiag current<cr>
+  autocmd User LspAttached nnoremap <silent><buffer> ]d <cmd>LspDiag next<cr><cmd>LspDiag current<cr>
   autocmd User LspAttached nnoremap <silent><buffer> <leader>d <cmd>LspDiag current<cr>
   autocmd User LspAttached nnoremap <silent><buffer> <leader>D <cmd>LspDiag show<cr>
 

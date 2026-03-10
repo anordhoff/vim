@@ -5,7 +5,7 @@ function gitignore#WildignoreList(filename)
 
   let ignorestring = ''
   for oline in readfile(a:filename)
-    let line = substitute(oline, '\s|\n|\r', '', "g")
+    let line = substitute(oline, '[\s\r\n]\+$', '', "g")
     let line = substitute(line, ',', '\\\\,', "g")
     if line =~ '^#' | con | endif
     if line == ''   | con | endif

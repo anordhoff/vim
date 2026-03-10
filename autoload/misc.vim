@@ -6,13 +6,6 @@ function misc#Clear(chars)
     \ "'. Execute :wviminfo! to persist changes"
 endfunction
 
-function misc#SynStack()
-  if !exists("*synstack")
-    return
-  endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunction
-
 function misc#RestoreCursor()
   if &ft =~# 'commit\|rebase'
     return

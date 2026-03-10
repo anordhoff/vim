@@ -1,10 +1,10 @@
 " launch the Github web client to create a pull request
-function rhubarb#GhPrCreateWeb()
+function pr#CreateWeb()
   execute "!gh pr create --web --fill-first"
 endfunction
 
 " create a Github pull request
-function rhubarb#GhPrCreate(subject)
+function pr#Create(subject)
   if a:subject == ''
     let l:output = system('gh pr create --fill-first')
     if v:shell_error == 0
@@ -23,7 +23,7 @@ function rhubarb#GhPrCreate(subject)
 endfunction
 
 " create a Github draft pull request
-function rhubarb#GhPrCreateDraft(subject)
+function pr#CreateDraft(subject)
   if a:subject == ''
     let l:output = system('gh pr create --draft --fill-first')
     if v:shell_error == 0
@@ -42,7 +42,7 @@ function rhubarb#GhPrCreateDraft(subject)
 endfunction
 
 " create a Github pull request using the contents of the prbody buffer as the body
-function rhubarb#GhPrCreateWithBody(bodyFile)
+function pr#CreateWithBody(bodyFile)
   let subject = shellescape(b:gh_pr_subject)
   if b:gh_pr_draft
     let l:cmd = "gh pr create --draft --title '" .. subject .. "' --body-file " .. a:bodyFile

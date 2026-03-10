@@ -93,7 +93,15 @@ set wildignore+=tags,*.tags,.git/**,**/bin/**,**/vendor/**,**/node_modules/**,**
 let &wildignore ..= gitignore#WildignoreList('.gitignore')
 
 " use ripgrep as the external grep program
-set grepprg=rg\ --vimgrep\ -g='!tags'\ -g='!*.tags'\ -g='!.git/**'\ -g='!**/bin/**'\ -g='!**/vendor/**'\ -g='!**/node_modules/**'\ -g='!**/pack/*/opt/**'\ -g='!**/pack/*/start/**'\ -g='!**/tmux/plugins/**'
+let &grepprg = 'rg --vimgrep'
+    \ .. " -g='!tags' -g='!*.tags'"
+    \ .. " -g='!.git/**'"
+    \ .. " -g='!**/bin/**'"
+    \ .. " -g='!**/vendor/**'"
+    \ .. " -g='!**/node_modules/**'"
+    \ .. " -g='!**/pack/*/opt/**'"
+    \ .. " -g='!**/pack/*/start/**'"
+    \ .. " -g='!**/tmux/plugins/**'"
 set grepformat=%f:%l:%c:%m
 
 " make line wrapping look nicer, but don't wrap by default
@@ -125,8 +133,7 @@ augroup END
 " reset completeopt option after manual completion
 augroup completion_config
   autocmd!
-  autocmd CompleteDone * pclose
-  autocmd CompleteDone * setlocal completeopt=menuone,noselect,preview
+  autocmd CompleteDone * pclose | setlocal completeopt=menuone,noselect,preview
 augroup END
 
 " enable the cursorline on the active window
@@ -148,9 +155,7 @@ augroup fuzzy_config
   autocmd CmdlineEnter [\:] let g:filescache = []
   autocmd CmdlineLeave [\:] set wildmode=longest:full,full
   autocmd CmdlineLeavePre [\:] call fuzzy#CmdlineLeavePre()
-
-  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*fin\%[d]\s' | set wildmode=noselect:lastused,full | call wildtrigger() | endif
-  autocmd CmdlineChanged [\:] if getcmdline() =~# '^\s*Grep\s' | set wildmode=noselect:lastused,full | call wildtrigger() | endif
+  autocmd CmdlineChanged [\:] let s:cmd = getcmdline() | if s:cmd =~# '^\s*fin\%[d]\s' || s:cmd =~# '^\s*Grep\s' | set wildmode=noselect:lastused,full | call wildtrigger() | endif
 augroup END
 
 " }}}
@@ -243,30 +248,12 @@ command -nargs=+ -complete=customlist,fuzzy#Grep Grep call fuzzy#VisitFile()
 command -nargs=1 Clear call misc#Clear(<q-args>)
 
 " get the name of the highlight group under the cursor
-command Inspect call misc#SynStack()
+command Inspect echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 
 " }}}
 " --- statusline --- {{{
 
-" custom statusline (requires additional StatusLineActive and StatusLineInactive highlight groups)
-set statusline=%!StatusLine(g:statusline_winid)
-
-" assemble the custom statusline for most filetypes
-function StatusLine(winid)
-  let statusline   = ' '                            " left padding
-  let statusline ..= statusline#Background(a:winid) " set status line background color
-  let statusline ..= '%{%statusline#BufferNr()%} '  " buffer number
-  let statusline ..= '%f  '                         " filepath
-  let statusline ..= '%{statusline#NopluginFlag()}' " noplugin flag
-  let statusline ..= '%H%W%R%M'                     " help,preview,read-only, and modified flags
-  let statusline ..= '%= '                          " right align
-  let statusline ..= '%7(%c%V%)'                    " byte index, virtual column number
-  let statusline ..= '  :  '                        " separator and padding
-  let statusline ..= '%2l/%L '                      " current line number/total line count
-  let statusline ..= '%{%statusline#Filetype()%}'   " filetype
-  let statusline ..= '%* '                          " reset background color; right padding
-  return statusline
-endfunction
+set statusline=%!statusline#Line(g:statusline_winid)
 
 " quickfix, location list, dirvish, and terminal buffer status lines
 augroup statusline_config
@@ -276,59 +263,7 @@ augroup statusline_config
   autocmd TerminalOpen * setlocal statusline=%!statusline#Term(g:statusline_winid)
 augroup END
 
-" }}}
-" --- tabline --- {{{
-
-set tabline=%!TabLine()
-
-function TabLine()
-  let tabline = '%#StatusLine#' .. ' ' .. '%#TabLine#'
-  for tab in range(tabpagenr('$'))
-    if tab + 1 == tabpagenr()
-      let tabline ..= '%#TabLineSel#'
-    else
-      let tabline ..= '%#TabLine#'
-    endif
-    let tabline ..= '%' .. (tab + 1) .. 'T'
-    let tabline ..= ' %{TabLabel(' .. (tab + 1) .. ')} '
-  endfor
-  let tabline ..= '%#TabLineFill#%T' .. '%=%#StatusLine#' .. ' '
-  return tabline
-endfunction
-
-function TabLabel(n)
-  let buflist = tabpagebuflist(a:n)
-  let winnr = tabpagewinnr(a:n)
-  let bufname = bufname(buflist[winnr - 1])
-  let filetype = getbufvar(buflist[winnr - 1], '&filetype')
-
-  " modified label
-  let modified = ' '
-  for bufnr in buflist
-    if getbufvar(bufnr, '&modified')
-      let modified = '+'
-      break
-    endif
-  endfor
-
-  " window count
-  let wincount = tabpagewinnr(a:n, '$') > 1 ? tabpagewinnr(a:n, '$') .. ':' : ''
-
-  " handle special buffer types
-  let name = ''
-  if bufname == ''
-    let name = '[No Name]'
-  elseif filetype == 'help'
-    let name = 'help'
-  elseif filetype == 'dirvish'
-    let name = 'dirvish'
-  elseif bufname =~ '^fugitive://'
-    let name = 'fugitive://' .. fnamemodify(FugitiveReal(bufname), ':.')
-  else
-    let name = l:bufname
-  endif
-  return wincount .. name .. modified
-endfunction
+set tabline=%!tabline#Line()
 
 " }}}
 " --- notes --- {{{
@@ -366,8 +301,7 @@ augroup terminal_config
   autocmd TerminalOpen * setlocal nobuflisted fillchars=eob:\  nonumber
 
   " enable terminal toggling
-  autocmd TerminalOpen * let g:termbuf = bufnr('%')
-  autocmd TerminalOpen * let g:termwin = win_getid()
+  autocmd TerminalOpen * let g:termbuf = bufnr('%') | let g:termwin = win_getid()
   autocmd TabNew * if getbufvar(bufnr('%'), '&buftype') == 'terminal' | let g:termwin = win_getid() | endif
 augroup END
 

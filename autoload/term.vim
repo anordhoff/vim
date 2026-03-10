@@ -1,11 +1,8 @@
+let g:termbuf = get(g:, 'termbuf', 0)
+let g:termwin = get(g:, 'termwin', 0)
+
 " toggle a horizontal/vertical terminal split
 function term#Toggle(vsplit)
-  if !exists('g:termbuf')
-    let g:termbuf = 0
-  endif
-  if !exists('g:termwin')
-    let g:termwin = 0
-  endif
 
   " if a terminal window exists in another tab, print an error
   if bufwinid(g:termbuf) == -1 && win_findbuf(g:termbuf) != []
