@@ -25,6 +25,12 @@ set mouse=a             " enable the use of the mouse (for scrolling)
 set mmp=10000           " prevent memory errors when loading large buffers
 set ttimeoutlen=10      " minimal delay for escape key presses
 
+" the presence of $TMUX implies we are running on a workstation
+let g:is_workstation = exists('$TMUX')
+
+" check if we are running within a dev container
+let g:is_container = exists('$container')
+
 " add jobfiles and jobfiles/after to vim's runtimepath and packpath
 set runtimepath-=~/.config/vim
 set runtimepath^=~/.config/vim,~/jobfiles/vim
@@ -69,12 +75,6 @@ let &t_Cs = "\e[4:3m"
 
 " enable undercurl highlighting with ctermul
 let &t_AU = "\e[58;5;%dm"
-
-" the presence of $TMUX implies we are running on a workstation
-let g:is_workstation = exists('$TMUX')
-
-" check if we are running within a dev container
-let g:is_container = exists('$container')
 
 " show search count; don't print ins-complete-menu messages or file info
 set shortmess-=S
