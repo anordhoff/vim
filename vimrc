@@ -25,11 +25,13 @@ set mouse=a             " enable the use of the mouse (for scrolling)
 set mmp=10000           " prevent memory errors when loading large buffers
 set ttimeoutlen=10      " minimal delay for escape key presses
 
-" enable filetype detection and loading of plugin and indent files
-filetype plugin indent on
-
-" enable syntax highlighting
-syntax enable
+" add jobfiles and jobfiles/after to vim's runtimepath and packpath
+set runtimepath-=~/.config/vim
+set runtimepath^=~/.config/vim,~/jobfiles/vim
+set runtimepath+=~/jobfiles/vim/after
+set packpath-=~/.config/vim
+set packpath^=~/.config/vim,~/jobfiles/vim
+set packpath+=~/jobfiles/vim/after
 
 " load internal plugins
 if &loadplugins
@@ -40,11 +42,14 @@ endif
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
 
-" the presence of $TMUX implies we are running on a workstation
-let g:is_workstation = exists('$TMUX')
+" enable filetype detection and loading of plugin and indent files
+filetype plugin indent on
 
-" check if we are running within a dev container
-let g:is_container = exists('$container')
+" enable syntax highlighting
+syntax enable
+
+" load custom colorscheme
+colorscheme mycolorscheme
 
 " set the cursor shape to a bar in insert mode
 let &t_SI = "\e[6 q"
@@ -65,6 +70,12 @@ let &t_Cs = "\e[4:3m"
 " enable undercurl highlighting with ctermul
 let &t_AU = "\e[58;5;%dm"
 
+" the presence of $TMUX implies we are running on a workstation
+let g:is_workstation = exists('$TMUX')
+
+" check if we are running within a dev container
+let g:is_container = exists('$container')
+
 " show search count; don't print ins-complete-menu messages or file info
 set shortmess-=S
 set shortmess+=cF
@@ -73,6 +84,12 @@ set shortmess+=cF
 set tabstop=2
 set shiftwidth=2
 set expandtab
+
+" make line wrapping look nicer, but don't wrap by default
+set nowrap
+set linebreak
+set breakindent
+let &showbreak=' .. '
 
 " improve readability of diffs
 set diffopt+=vertical,hiddenoff,algorithm:histogram,indent-heuristic
@@ -103,23 +120,6 @@ let &grepprg = 'rg --vimgrep'
     \ .. " -g='!**/pack/*/start/**'"
     \ .. " -g='!**/tmux/plugins/**'"
 set grepformat=%f:%l:%c:%m
-
-" make line wrapping look nicer, but don't wrap by default
-set nowrap
-set linebreak
-set breakindent
-let &showbreak=' .. '
-
-" add jobfiles and jobfiles/after to vim's runtimepath and packpath
-set runtimepath-=~/.config/vim
-set runtimepath^=~/.config/vim,~/jobfiles/vim
-set runtimepath+=~/jobfiles/vim/after
-set packpath-=~/.config/vim
-set packpath^=~/.config/vim,~/jobfiles/vim
-set packpath+=~/jobfiles/vim/after
-
-" load custom colorscheme
-colorscheme mycolorscheme
 
 " }}}
 " --- augroups --- {{{
