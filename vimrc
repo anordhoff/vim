@@ -1,6 +1,6 @@
-" vim: foldmethod=marker foldlevel=0
-
-" --- settings --- {{{
+" --------------------------------------
+" settings
+" --------------------------------------
 
 set notermguicolors     " disable 24-bit colors
 set t_Co=16             " use the 16 color palette
@@ -109,6 +109,11 @@ set wildignore+=tags,*.tags,.git/**,**/bin/**,**/vendor/**,**/node_modules/**,**
 " ignore files and directories listed in .gitignore
 let &wildignore ..= gitignore#WildignoreList('.gitignore')
 
+" use the fuzzy-file-picker function
+if v:version >= 902
+  set findfunc=fuzzy#Find
+endif
+
 " use ripgrep as the external grep program
 let &grepprg = 'rg --vimgrep'
     \ .. " -g='!tags' -g='!*.tags'"
@@ -121,8 +126,10 @@ let &grepprg = 'rg --vimgrep'
     \ .. " -g='!**/tmux/plugins/**'"
 set grepformat=%f:%l:%c:%m
 
-" }}}
-" --- augroups --- {{{
+
+" --------------------------------------
+" augroups
+" --------------------------------------
 
 " wrap text in the preview window
 augroup preview_config
@@ -150,16 +157,20 @@ augroup cursor_config
 augroup END
 
 " enable fuzzy autocompletion when using :find or :Grep
-augroup fuzzy_config
-  autocmd!
-  autocmd CmdlineEnter [\:] let g:filescache = []
-  autocmd CmdlineLeave [\:] set wildmode=longest:full,full
-  autocmd CmdlineLeavePre [\:] call fuzzy#CmdlineLeavePre()
-  autocmd CmdlineChanged [\:] let s:cmd = getcmdline() | if s:cmd =~# '^\s*fin\%[d]\s' || s:cmd =~# '^\s*Grep\s' | set wildmode=noselect:lastused,full | call wildtrigger() | endif
-augroup END
+if v:version >= 902
+  augroup fuzzy_config
+    autocmd!
+    autocmd CmdlineEnter [\:] let g:filescache = []
+    autocmd CmdlineLeave [\:] set wildmode=longest:full,full
+    autocmd CmdlineLeavePre [\:] call fuzzy#CmdlineLeavePre()
+    autocmd CmdlineChanged [\:] let s:cmd = getcmdline() | if s:cmd =~# '^\s*fin\%[d]\s' || s:cmd =~# '^\s*Grep\s' | set wildmode=noselect:lastused,full | call wildtrigger() | endif
+  augroup END
+endif
 
-" }}}
-" --- mappings --- {{{
+
+" --------------------------------------
+" mappings
+" --------------------------------------
 
 " leader key
 let mapleader = "\<space>"
@@ -183,9 +194,6 @@ nnoremap <leader>e :e **/*
 nnoremap <leader>s :sp **/*
 nnoremap <leader>v :vs **/*
 nnoremap <leader>b :b **/*
-
-" fuzzy-file-picker
-set findfunc=fuzzy#Find
 nnoremap <leader>f :find<space>
 
 " grep the current buffer or all files in the current directory
@@ -238,11 +246,15 @@ inoremap <leftmouse> <nop>
 inoremap <rightmouse> <nop>
 inoremap <middlemouse> <nop>
 
-" }}}
-" --- commands --- {{{
+
+" --------------------------------------
+" commands
+" --------------------------------------
 
 " live-grep
-command -nargs=+ -complete=customlist,fuzzy#Grep Grep call fuzzy#VisitFile()
+if v:version >= 902
+  command -nargs=+ -complete=customlist,fuzzy#Grep Grep call fuzzy#VisitFile()
+endif
 
 " clear the specified register
 command -nargs=1 Clear call misc#Clear(<q-args>)
@@ -250,8 +262,10 @@ command -nargs=1 Clear call misc#Clear(<q-args>)
 " get the name of the highlight group under the cursor
 command Inspect echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 
-" }}}
-" --- statusline --- {{{
+
+" --------------------------------------
+" statusline / tabline
+" --------------------------------------
 
 set statusline=%!statusline#Line(g:statusline_winid)
 
@@ -265,8 +279,10 @@ augroup END
 
 set tabline=%!tabline#Line()
 
-" }}}
-" --- notes --- {{{
+
+" --------------------------------------
+" notes
+" --------------------------------------
 
 " notebook directory
 let g:projectsdir = '~/notebook/projects/'
@@ -282,8 +298,10 @@ augroup notebook_config
   autocmd BufNewFile,BufRead ~/notebook/**/*.txt,~/notebook/**/*.md setlocal nobuflisted
 augroup END
 
-" }}}
-" --- terminal --- {{{
+
+" --------------------------------------
+" terminal
+" --------------------------------------
 
 " use ctrl-o as the special key in terminal windows
 set termwinkey=<c-o>

@@ -1,3 +1,5 @@
+let s:clipboard = has('mac') ? 'pbcopy' : 'xclip -selection clipboard'
+
 " launch the Github web client to create a pull request
 function pr#CreateWeb()
   execute "!gh pr create --web --fill-first"

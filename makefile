@@ -43,4 +43,4 @@ rm: validate-path
 # make diff dir1=vim dir2=vim.backup
 .PHONY: diff
 diff:
-	diff -r --exclude .git --exclude pack/download --exclude tmux/plugins $(dir1) $(dir2)
+	diff -r --exclude .git --exclude pack/download $(dir1) $(dir2)
