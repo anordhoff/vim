@@ -1,21 +1,18 @@
-if !g:is_workstation && !g:is_container
-  finish
-endif
-let g:load_lsp = 1
-
 let s:options = #{
   \   autoComplete: v:false,
-  \   omniComplete: v:true,
   \   autoHighlightDiags: v:true,
-  \   diagSignErrorText: 'E',
-  \   diagSignHintText: 'H',
-  \   diagSignInfoText: 'I',
-  \   diagSignWarningText: 'W',
+  \   diagSignErrorText: 'E:',
+  \   diagSignHintText: 'H:',
+  \   diagSignInfoText: 'I:',
+  \   diagSignWarningText: 'W:',
   \   diagVirtualTextAlign: 'after',
   \   diagVirtualTextWrap: 'truncate',
   \   echoSignature: v:true,
   \   highlightDiagInline: v:true,
-  \   popupBorder: v:true,
+  \   hoverInPreview: v:true,
+  \   omniComplete: v:true,
+  \   popupBorder: v:false,
+  \   popupBorderChars: ['-', '|', '-', '|', '.', '.', "'", "'"],
   \   semanticHighlight: v:true,
   \   showDiagWithSign: v:false,
   \   showDiagWithVirtualText: v:true,

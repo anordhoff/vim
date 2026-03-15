@@ -1,4 +1,4 @@
-if exists("b:did_custom_ftplugin")
+if exists('b:did_custom_ftplugin')
   finish
 endif
 let b:did_custom_ftplugin = 1
@@ -11,6 +11,4 @@ command -buffer Cover :silent !go tool cover -html=coverage.out
 command -buffer Coverfunc :tabedit /tmp/coverage.func | setlocal noreadonly | :%d | execute 'read !go tool cover -func=coverage.out' | :1d | :silent write | setlocal readonly
 
 " enable lsp
-if exists("g:load_lsp")
-  packadd lsp
-endif
+packadd lsp

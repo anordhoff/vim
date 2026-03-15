@@ -1,4 +1,4 @@
-if exists("b:did_custom_ftplugin")
+if exists('b:did_custom_ftplugin')
   finish
 endif
 let b:did_custom_ftplugin = 1
@@ -11,7 +11,7 @@ nnoremap <buffer><silent> gqq :<c-u>call markdown#Renumber(line('.'), line('.') 
 nnoremap <buffer><silent> gq :set opfunc=markdown#RenumberOp<cr>g@
 xnoremap <buffer><silent> gq :<c-u>call markdown#Renumber(line("'<"), line("'>"))<cr>
 
-if !g:loaded_markdown_preview
+if !exists('g:loaded_markdown_preview')
   finish
 endif
 
