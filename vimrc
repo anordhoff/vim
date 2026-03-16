@@ -110,7 +110,7 @@ set wildignore+=tags,*.tags,.git/**,**/bin/**,**/vendor/**,**/node_modules/**,**
 let &wildignore ..= gitignore#WildignoreList('.gitignore')
 
 " use the fuzzy-file-picker function
-if v:version >= 902
+if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
   set findfunc=fuzzy#Find
 endif
 
@@ -157,13 +157,13 @@ augroup cursor_config
 augroup END
 
 " enable fuzzy autocompletion when using :find or :Grep
-if v:version >= 902
+if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
   augroup fuzzy_config
     autocmd!
     autocmd CmdlineEnter [\:] let g:filescache = []
     autocmd CmdlineLeave [\:] set wildmode=longest:full,full
+    autocmd CmdlineChanged [\:] call fuzzy#CmdlineChanged()
     autocmd CmdlineLeavePre [\:] call fuzzy#CmdlineLeavePre()
-    autocmd CmdlineChanged [\:] let s:cmd = getcmdline() | if s:cmd =~# '^\s*fin\%[d]\s' || s:cmd =~# '^\s*Grep\s' | set wildmode=noselect:lastused,full | call wildtrigger() | endif
   augroup END
 endif
 
@@ -189,12 +189,17 @@ cnoremap <expr> <down> wildmenumode() ? "\<c-e>\<down>" : "\<down>"
 cnoremap <expr> <c-p>  wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
 cnoremap <expr> <c-n>  wildmenumode() ? "\<c-e>\<down>" : "\<down>"
 
-" file and buffer navigation
-nnoremap <leader>e :e **/*
-nnoremap <leader>s :sp **/*
-nnoremap <leader>v :vs **/*
-nnoremap <leader>b :b **/*
+" file navigation
 nnoremap <leader>f :find<space>
+nnoremap <leader>s :sfind<space>
+nnoremap <leader>v :vert sfind<space>
+
+" buffer navigation
+if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
+  nnoremap <leader>b :Buffer<space>
+else
+  nnoremap <leader>b :b **/*
+endif
 
 " grep the current buffer or all files in the current directory
 nnoremap <leader>l :lvimgrep //j % \| lopen \| wincmd p<c-\>e[setcmdpos(11), getcmdline()][1]<cr>
@@ -251,8 +256,11 @@ inoremap <middlemouse> <nop>
 " commands
 " --------------------------------------
 
-" live-grep
-if v:version >= 902
+if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
+  " fuzzy buffer picker
+  command -nargs=1 -complete=customlist,fuzzy#Buffers Buffer call fuzzy#SwitchBuffer(<q-args>)
+
+  " live-grep
   command -nargs=+ -complete=customlist,fuzzy#Grep Grep call fuzzy#VisitFile()
 endif
 

@@ -16,6 +16,26 @@ function fuzzy#Find(arg, _)
 endfunction
 
 
+" fuzzy buffer picker
+function fuzzy#Buffers(arglead, cmdline, cursorpos)
+  let bufs = getbufinfo(#{buflisted: 1})
+  let names = map(bufs, {_, b -> empty(b.name) ? $'[{b.bufnr}]' : fnamemodify(b.name, ':~:.')})
+  return a:arglead == '' ? names : matchfuzzy(names, a:arglead)
+endfunction
+
+" switch to a buffer by its display name
+function fuzzy#SwitchBuffer(name)
+  for buf in getbufinfo(#{buflisted: 1})
+    let display = empty(buf.name) ? $'[{buf.bufnr}]' : fnamemodify(buf.name, ':~:.')
+    if display ==# a:name
+      execute $'buffer {buf.bufnr}'
+      return
+    endif
+  endfor
+  execute $'buffer {a:name}'
+endfunction
+
+
 " live-grep
 function fuzzy#Grep(arglead, cmdline, cursorpos)
   if match(&grepprg, '\$\*') == -1 | let &grepprg ..= ' $*' | endif
@@ -31,12 +51,30 @@ function fuzzy#VisitFile()
 endfunction
 
 
-" handle <enter> keypress when using :find or :Grep
+" enable fuzzy wildmode when using :find, :sfind, :vert sfind, :Buffer, or :Grep
+function fuzzy#CmdlineChanged()
+  let cmd = getcmdline()
+  if cmd =~# '^\s*\%(vert \)\?s\?fin\%[d]\s' || cmd =~# '^\s*Buffer\s' || cmd =~# '^\s*Grep\s'
+    set wildmode=noselect:lastused,full
+    call wildtrigger()
+  endif
+endfunction
+
+" handle <enter> keypress when using :find, :sfind, :vert sfind, :Buffer, or :Grep
 function fuzzy#CmdlineLeavePre()
   if get(cmdcomplete_info(), 'matches', []) != []
     let info = cmdcomplete_info()
     if getcmdline() =~# '^\s*fin\%[d]\s' && info.selected == -1
       call setcmdline($'find {info.matches[0]}')
+    endif
+    if getcmdline() =~# '^\s*sfin\%[d]\s' && info.selected == -1
+      call setcmdline($'sfind {info.matches[0]}')
+    endif
+    if getcmdline() =~# '^\s*vert sfin\%[d]\s' && info.selected == -1
+      call setcmdline($'vert sfind {info.matches[0]}')
+    endif
+    if getcmdline() =~# '^\s*Buffer\s' && info.selected == -1
+      call setcmdline($'Buffer {info.matches[0]}')
     endif
     if getcmdline() =~# '^\s*Grep\s'
       let g:fuzzy_selected = info.selected != -1
