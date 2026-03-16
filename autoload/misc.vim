@@ -1,3 +1,13 @@
+function misc#Search(forward) abort
+  let chunks = getregion(getpos('.'), getpos('v'), #{type: mode()})
+  call map(chunks, {_, v -> escape(v, '\')})
+  let pat = '\V' .. join(chunks, '\n')
+  call setreg('/', pat)
+  call histadd('/', pat)
+  let v:searchforward = a:forward
+  return "\<Esc>" .. v:count1 .. 'n'
+endfunction
+
 function misc#Clear(chars)
   for char in split(a:chars, '\zs')
     call setreg(char, [])

@@ -190,6 +190,10 @@ cnoremap <expr> <down> wildmenumode() ? "\<c-e>\<down>" : "\<down>"
 cnoremap <expr> <c-p>  wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
 cnoremap <expr> <c-n>  wildmenumode() ? "\<c-e>\<down>" : "\<down>"
 
+" search for the visually selected text
+xnoremap <expr> * misc#Search(1)
+xnoremap <expr> # misc#Search(0)
+
 " file navigation
 nnoremap <leader>f :find<space>
 nnoremap <leader>s :sfind<space>
