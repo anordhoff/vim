@@ -29,9 +29,6 @@ set ttimeoutlen=10      " minimal delay for escape key presses
 " the presence of $TMUX implies we are running on a workstation
 let g:is_workstation = exists('$TMUX')
 
-" check if we are running within a dev container
-let g:is_container = exists('$container')
-
 " add jobfiles and jobfiles/after to vim's runtimepath and packpath
 set runtimepath-=~/.config/vim
 set runtimepath^=~/.config/vim,~/jobfiles/vim
@@ -67,6 +64,9 @@ let &t_TI = "\e[>4;2m"
 let &t_TE = "\e[>4;m"
 
 " enable focus-event tracking
+" TODO: causes tmux to alert anytime I switch to a different tmux window. Can I update this so that it only alerts 
+" when I switch to a vim window, and not alert when I switch away from a vim window? I only need this to pull 
+" changes to a file that are being changed in multiple places
 let &t_fe = "\e[?1004h"
 let &t_fd = "\e[?1004l"
 
@@ -154,7 +154,7 @@ augroup END
 " restore cursor to previous location when opening a file
 augroup cursor_config
   autocmd!
-  autocmd BufRead * autocmd FileType <buffer> ++once call misc#RestoreCursor()
+  autocmd BufReadPost * call misc#RestoreCursor()
 augroup END
 
 " enable fuzzy autocompletion when using :find or :Grep

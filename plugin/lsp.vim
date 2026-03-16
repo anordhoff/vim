@@ -63,7 +63,4 @@ augroup lsp_attach
   " trigger completion when typing a '.' char
   " TODO: built-in trigger char autocompletion (https://github.com/yegappan/lsp/issues/781)
   autocmd User LspAttached inoremap <buffer> . .<c-x><c-o>
-
-  " configure gq to use the language server when formatting
-  autocmd User LspAttached setlocal formatexpr=lsp#lsp#FormatExpr()
 augroup END
