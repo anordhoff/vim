@@ -10,6 +10,7 @@ set ignorecase          " case-insensitive searching...
 set smartcase           " ...but not if the search contains a capital letter
 set splitright          " split vertical windows to the right of current window
 set splitbelow          " split horizontal windows below current window
+set splitkeep=screen    " keep text on the same line when splitting windows
 set hidden              " allow switching between buffers without saving
 set autoread            " automatically read file changes
 set noshowmode          " hide the mode from the bottom row
@@ -131,10 +132,10 @@ set grepformat=%f:%l:%c:%m
 " augroups
 " --------------------------------------
 
-" wrap text in the preview window
+" wrap text in the preview window; don't add to the buffer list
 augroup preview_config
   autocmd!
-  autocmd WinEnter * if &previewwindow | setlocal wrap | endif
+  autocmd BufWinEnter * if &previewwindow | setlocal wrap | setlocal nobuflisted | endif
 augroup END
 
 " reset completeopt option after manual completion
