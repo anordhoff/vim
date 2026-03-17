@@ -55,7 +55,7 @@ hi! link Debug                   Special
 " --------------------------------------
 hi Cursor                        cterm=reverse     ctermfg=8        ctermbg=none
 hi! link TermCursor              Cursor
-hi CursorLine                    cterm=none        ctermfg=none     ctermbg=17
+hi CursorLine                    cterm=none        ctermfg=none     ctermbg=16
 hi! link CursorLineNr            LineNr
 hi! link CursorColumn            CursorLine
 hi! link ColorColumn             CursorLine
@@ -63,7 +63,7 @@ hi! link ColorColumn             CursorLine
 " --------------------------------------
 " number column
 " --------------------------------------
-hi LineNr                        cterm=none        ctermfg=0        ctermbg=none
+hi LineNr                        cterm=none        ctermfg=20       ctermbg=none
 hi SignColumn                    cterm=none        ctermfg=7        ctermbg=none
 hi FoldColumn                    cterm=none        ctermfg=7        ctermbg=none
 hi Folded                        cterm=none        ctermfg=6        ctermbg=none
@@ -71,10 +71,10 @@ hi Folded                        cterm=none        ctermfg=6        ctermbg=none
 " --------------------------------------
 " window/tab delimiters
 " --------------------------------------
-hi VertSplit                     cterm=none        ctermfg=0        ctermbg=none
-hi TabLine                       cterm=none        ctermfg=7        ctermbg=19
-hi TabLineFill                   cterm=none        ctermfg=none     ctermbg=19
-hi TabLineSel                    cterm=none        ctermfg=6        ctermbg=19
+hi VertSplit                     cterm=none        ctermfg=20       ctermbg=none
+hi TabLine                       cterm=none        ctermfg=7        ctermbg=18
+hi TabLineFill                   cterm=none        ctermfg=none     ctermbg=18
+hi TabLineSel                    cterm=none        ctermfg=6        ctermbg=18
 
 " --------------------------------------
 " prompt
@@ -93,7 +93,7 @@ hi StatusLine                    cterm=none        ctermfg=7        ctermbg=none
 hi StatusLineNC                  cterm=none        ctermfg=7        ctermbg=none
 hi! link StatusLineTerm          Statusline
 hi! link StatusLineTermNC        StatusLineNC
-hi StatusLineInactive            cterm=none        ctermfg=7        ctermbg=19
+hi StatusLineInactive            cterm=none        ctermfg=7        ctermbg=18
 if g:is_workstation
   hi StatusLineActive            cterm=none        ctermfg=7        ctermbg=22
 else
@@ -113,7 +113,7 @@ hi CurSearch                     cterm=reverse     ctermfg=13       ctermbg=none
 " --------------------------------------
 hi Pmenu                         cterm=none        ctermfg=none     ctermbg=19
 hi PmenuSel                      cterm=none        ctermfg=none     ctermbg=23
-hi PmenuSbar                     cterm=none        ctermfg=none     ctermbg=0
+hi PmenuSbar                     cterm=none        ctermfg=none     ctermbg=20
 hi PmenuThumb                    cterm=none        ctermfg=none     ctermbg=8
 hi PmenuMatch                    cterm=none        ctermfg=6        ctermbg=19
 hi PmenuMatchSel                 cterm=none        ctermfg=6        ctermbg=23
@@ -132,7 +132,7 @@ hi MatchParen                    cterm=none        ctermfg=5        ctermbg=none
 hi Visual                        cterm=none        ctermfg=none     ctermbg=22
 hi VisualNOS                     cterm=none        ctermfg=none     ctermbg=22
 hi NonText                       cterm=none        ctermfg=3        ctermbg=none
-hi EndOfBuffer                   cterm=none        ctermfg=0        ctermbg=none
+hi EndOfBuffer                   cterm=none        ctermfg=20       ctermbg=none
 hi Conceal                       cterm=none        ctermfg=2        ctermbg=none
 hi SpecialKey                    cterm=none        ctermfg=2        ctermbg=none
 
@@ -147,7 +147,7 @@ hi Todo                          cterm=none        ctermfg=8        ctermbg=none
 " diff
 " --------------------------------------
 hi DiffAdd                       cterm=reverse     ctermfg=10       ctermbg=none
-hi DiffChange                    cterm=none        ctermfg=none     ctermbg=18
+hi DiffChange                    cterm=none        ctermfg=none     ctermbg=17
 hi DiffDelete                    cterm=none        ctermfg=1        ctermbg=none
 hi DiffText                      cterm=reverse     ctermfg=11       ctermbg=none
 
@@ -245,7 +245,7 @@ hi yamlBlockMappingKey           cterm=none        ctermfg=6        ctermbg=none
 " --------------------------------------
 " copilot
 " --------------------------------------
-hi CopilotSuggestion             cterm=none        ctermfg=0        ctermbg=none
+hi CopilotSuggestion             cterm=none        ctermfg=20       ctermbg=none
 hi CopilotChatSelection          cterm=none        ctermfg=none     ctermbg=23
 hi CopilotChatHeader             cterm=none        ctermfg=5        ctermbg=none
 hi CopilotChatSeparator          cterm=none        ctermfg=5        ctermbg=none
@@ -267,7 +267,7 @@ hi DiffRemoved                   cterm=none        ctermfg=1        ctermbg=none
 " lsp
 " --------------------------------------
 hi LspPopup                      cterm=none        ctermfg=7        ctermbg=none
-hi LspPopupBorder                cterm=none        ctermfg=0        ctermbg=none
+hi LspPopupBorder                cterm=none        ctermfg=20       ctermbg=none
 hi LspDiagInlineError            cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=1
 hi LspDiagInlineWarning          cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=3
 hi LspDiagInlineHint             cterm=undercurl   ctermfg=none     ctermbg=none     ctermul=6
