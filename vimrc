@@ -5,6 +5,7 @@
 set notermguicolors     " disable 24-bit colors
 set t_Co=16             " use the 16 color palette
 set number              " enable line numbers
+set hlsearch            " enable search highlighting
 set noincsearch         " do not immediately jump to first search hit
 set ignorecase          " case-insensitive searching...
 set smartcase           " ...but not if the search contains a capital letter
@@ -23,6 +24,7 @@ set smoothscroll        " scrolling works with screen lines
 set foldmethod=syntax   " fold based on syntax highlighting items
 set foldlevelstart=99   " don't automatically close folds
 set mouse=a             " enable the use of the mouse (for scrolling)
+set belloff=all         " disable the bell
 set mmp=10000           " prevent memory errors when loading large buffers
 set ttimeoutlen=10      " minimal delay for escape key presses
 
@@ -64,9 +66,6 @@ let &t_TI = "\e[>4;2m"
 let &t_TE = "\e[>4;m"
 
 " enable focus-event tracking
-" TODO: causes tmux to alert anytime I switch to a different tmux window. Can I update this so that it only alerts 
-" when I switch to a vim window, and not alert when I switch away from a vim window? I only need this to pull 
-" changes to a file that are being changed in multiple places
 let &t_fe = "\e[?1004h"
 let &t_fd = "\e[?1004l"
 
