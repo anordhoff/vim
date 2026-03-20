@@ -1,5 +1,9 @@
 function misc#Grep(...)
-	return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
+  let output = system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
+  if v:shell_error
+    echohl ErrorMsg | echo 'E480: No match: ' .. join(a:000, ' ') | echohl None
+  endif
+  return output
 endfunction
 
 function misc#Search(forward) abort
