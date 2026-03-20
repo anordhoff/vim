@@ -114,22 +114,43 @@ if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
   set findfunc=fuzzy#Find
 endif
 
-" use ripgrep as the external grep program
-let &grepprg = 'rg --vimgrep'
-    \ .. " -g='!tags' -g='!*.tags'"
-    \ .. " -g='!.git/**'"
-    \ .. " -g='!**/bin/**'"
-    \ .. " -g='!**/vendor/**'"
-    \ .. " -g='!**/node_modules/**'"
-    \ .. " -g='!**/pack/*/opt/**'"
-    \ .. " -g='!**/pack/*/start/**'"
-    \ .. " -g='!**/tmux/plugins/**'"
-set grepformat=%f:%l:%c:%m
+" use ripgrep as the external grep program if available
+if executable('rg')
+  let &grepprg = "rg --vimgrep"
+      \ .. " -g='!tags'"
+      \ .. " -g='!*.tags'"
+      \ .. " -g='!.git/**'"
+      \ .. " -g='!**/bin/**'"
+      \ .. " -g='!**/vendor/**'"
+      \ .. " -g='!**/node_modules/**'"
+      \ .. " -g='!**/pack/*/opt/**'"
+      \ .. " -g='!**/pack/*/start/**'"
+      \ .. " -g='!**/tmux/plugins/**'"
+  set grepformat=%f:%l:%c:%m
+else
+  " NOTE: grep can only exclude a directory name, not a directory path.
+  " Therefore, pack/*/opt, pack/*/start, and tmux/plugins have all been omitted
+  let &grepprg = "grep -rnH"
+      \ .. " --exclude=tags"
+      \ .. " --exclude='*.tags'"
+      \ .. " --exclude-dir=.git"
+      \ .. " --exclude-dir=bin"
+      \ .. " --exclude-dir=vendor"
+      \ .. " --exclude-dir=node_modules"
+  set grepformat=%f:%l:%m
+endif
 
 
 " --------------------------------------
 " augroups
 " --------------------------------------
+
+" open the quickfix or location list automatically when grepping
+augroup quickfix_config
+    autocmd!
+    autocmd QuickFixCmdPost vimgrep,cgetexpr cwindow | wincmd p
+    autocmd QuickFixCmdPost lvimgrep,lgetexpr lwindow | wincmd p
+augroup END
 
 " wrap text in the preview window; don't add to the buffer list
 augroup preview_config
@@ -156,7 +177,7 @@ augroup cursor_config
   autocmd BufReadPost * call misc#RestoreCursor()
 augroup END
 
-" enable fuzzy autocompletion when using :find or :Grep
+" enable fuzzy autocompletion when using :find or :LiveGrep
 if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
   augroup fuzzy_config
     autocmd!
@@ -193,27 +214,26 @@ cnoremap <expr> <c-n>  wildmenumode() ? "\<c-e>\<down>" : "\<down>"
 xnoremap <expr> * misc#Search(1)
 xnoremap <expr> # misc#Search(0)
 
-" file navigation
+" clear search highlighting
+nnoremap <silent> <c-l> :nohlsearch<cr>
+
+" file and buffer navigation
 nnoremap <leader>f :find<space>
 nnoremap <leader>s :sfind<space>
 nnoremap <leader>v :vert sfind<space>
+nnoremap <leader>b :ls<cr>:b **/*
 
-" buffer navigation
+" fuzzy buffer navigation
 if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
   nnoremap <leader>b :Buffer<space>
-else
-  nnoremap <leader>b :b **/*
 endif
 
-" grep the current buffer or all files in the current directory
-nnoremap <leader>l :lvimgrep //j % \| lopen \| wincmd p<c-\>e[setcmdpos(11), getcmdline()][1]<cr>
-nnoremap <leader>g :vimgrep //j **/* \| copen \| wincmd p<c-\>e[setcmdpos(10), getcmdline()][1]<cr>
+" vimgrep the current buffer or all files in the current directory
+nnoremap <leader>l :lvimgrep //j %<left><left><left><left>
+nnoremap <leader>g :vimgrep //j **/*<left><left><left><left><left><left><left>
 
-" live-grep (ripgrep)
-nnoremap <leader>r :Grep<space>
-
-" clear search highlighting
-nnoremap <silent> <c-l> :nohlsearch<cr>
+" live grep
+nnoremap <leader>r :LiveGrep<space>
 
 " jump to the definition in the tag file
 nnoremap gd <c-]>
@@ -260,12 +280,20 @@ inoremap <middlemouse> <nop>
 " commands
 " --------------------------------------
 
+" smoother grepping
+command -nargs=+ -complete=file_in_path -bar Grep  cgetexpr misc#Grep(<f-args>)
+command -nargs=+ -complete=file_in_path -bar LGrep lgetexpr misc#Grep(<f-args>)
+
+" default :grep and :lgrep to Grep and LGrep
+cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')  ? 'Grep'  : 'grep'
+cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep'
+
 if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
-  " fuzzy buffer picker
+  " fuzzy buffer navigation
   command -nargs=1 -complete=customlist,fuzzy#Buffers Buffer call fuzzy#SwitchBuffer(<q-args>)
 
-  " live-grep
-  command -nargs=+ -complete=customlist,fuzzy#Grep Grep call fuzzy#VisitFile()
+  " live grep
+  command -nargs=+ -complete=customlist,fuzzy#LiveGrep LiveGrep call fuzzy#VisitFile()
 endif
 
 " clear the specified register

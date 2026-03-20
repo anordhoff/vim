@@ -37,7 +37,7 @@ endfunction
 
 
 " live-grep
-function fuzzy#Grep(arglead, cmdline, cursorpos)
+function fuzzy#LiveGrep(arglead, cmdline, cursorpos)
   if match(&grepprg, '\$\*') == -1 | let &grepprg ..= ' $*' | endif
   let cmd = substitute(&grepprg, '\$\*', shellescape(escape(a:arglead, '\')), '')
   return len(a:arglead) > 1 ? systemlist(cmd) : []
@@ -51,16 +51,16 @@ function fuzzy#VisitFile()
 endfunction
 
 
-" enable fuzzy wildmode when using :find, :sfind, :vert sfind, :Buffer, or :Grep
+" enable fuzzy wildmode when using :find, :sfind, :vert sfind, :Buffer, or :LiveGrep
 function fuzzy#CmdlineChanged()
   let cmd = getcmdline()
-  if cmd =~# '^\s*\%(vert \)\?s\?fin\%[d]\s' || cmd =~# '^\s*Buffer\s' || cmd =~# '^\s*Grep\s'
+  if cmd =~# '^\s*\%(vert \)\?s\?fin\%[d]\s' || cmd =~# '^\s*Buffer\s' || cmd =~# '^\s*LiveGrep\s'
     set wildmode=noselect:lastused,full
     call wildtrigger()
   endif
 endfunction
 
-" handle <enter> keypress when using :find, :sfind, :vert sfind, :Buffer, or :Grep
+" handle <enter> keypress when using :find, :sfind, :vert sfind, :Buffer, or :LiveGrep
 function fuzzy#CmdlineLeavePre()
   if get(cmdcomplete_info(), 'matches', []) != []
     let info = cmdcomplete_info()
@@ -76,7 +76,7 @@ function fuzzy#CmdlineLeavePre()
     if getcmdline() =~# '^\s*Buffer\s' && info.selected == -1
       call setcmdline($'Buffer {info.matches[0]}')
     endif
-    if getcmdline() =~# '^\s*Grep\s'
+    if getcmdline() =~# '^\s*LiveGrep\s'
       let g:fuzzy_selected = info.selected != -1
           \ ? info.matches[info.selected] : info.matches[0]
       call setcmdline(info.cmdline_orig)
