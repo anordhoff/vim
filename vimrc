@@ -21,8 +21,6 @@ set formatoptions=jwcql " don't auto-wrap text; format comments with gq
 set scrolloff=2         " keep a minimum of 2 lines above and below the cursor
 set sidescrolloff=8     " keep a minimum of 8 columns before & after the cursor
 set smoothscroll        " scrolling works with screen lines
-set foldmethod=syntax   " fold based on syntax highlighting items
-set foldlevelstart=99   " don't automatically close folds
 set mouse=a             " enable the use of the mouse (for scrolling)
 set belloff=all         " disable the bell
 set mmp=10000           " prevent memory errors when loading large buffers

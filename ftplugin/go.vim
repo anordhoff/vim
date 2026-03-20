@@ -9,6 +9,3 @@ command -buffer Lint :Dispatch golangci-lint run --show-stats=false --output.tex
 " show test coverage
 command -buffer Cover :silent !go tool cover -html=coverage.out
 command -buffer Coverfunc :tabedit /tmp/coverage.func | setlocal noreadonly | :%d | execute 'read !go tool cover -func=coverage.out' | :1d | :silent write | setlocal readonly
-
-" enable lsp
-packadd lsp

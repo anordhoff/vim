@@ -8,12 +8,12 @@ endfunction
 " create a Github pull request
 function pr#Create(subject)
   if a:subject == ''
-    let l:output = system('gh pr create --fill-first')
+    let output = system('gh pr create --fill-first')
     if v:shell_error == 0
-      call system(s:clipboard, l:output)
-      echo trim(l:output)
+      call system(s:clipboard, output)
+      echo trim(output)
     else
-      echohl ErrorMsg | echo trim(l:output) | echohl None
+      echohl ErrorMsg | echo trim(output) | echohl None
     endif
   else
     let tmpfile = tempname()
@@ -27,12 +27,12 @@ endfunction
 " create a Github draft pull request
 function pr#CreateDraft(subject)
   if a:subject == ''
-    let l:output = system('gh pr create --draft --fill-first')
+    let output = system('gh pr create --draft --fill-first')
     if v:shell_error == 0
-      call system(s:clipboard, l:output)
-      echo trim(l:output)
+      call system(s:clipboard, output)
+      echo trim(output)
     else
-      echohl ErrorMsg | echo trim(l:output) | echohl None
+      echohl ErrorMsg | echo trim(output) | echohl None
     endif
   else
     let tmpfile = tempname()
@@ -47,16 +47,16 @@ endfunction
 function pr#CreateWithBody(bodyFile)
   let subject = shellescape(b:gh_pr_subject)
   if b:gh_pr_draft
-    let l:cmd = "gh pr create --draft --title '" .. subject .. "' --body-file " .. a:bodyFile
+    let cmd = "gh pr create --draft --title '" .. subject .. "' --body-file " .. a:bodyFile
   else
-    let l:cmd = "gh pr create --title '" .. subject .. "' --body-file " .. a:bodyFile
+    let cmd = "gh pr create --title '" .. subject .. "' --body-file " .. a:bodyFile
   endif
-  let l:output = system(l:cmd)
+  let output = system(cmd)
   if v:shell_error == 0
-    call system(s:clipboard, l:output)
-    echo trim(l:output)
+    call system(s:clipboard, output)
+    echo trim(output)
   else
-    echohl ErrorMsg | echo trim(l:output) | echohl None
+    echohl ErrorMsg | echo trim(output) | echohl None
    endif
   call delete(expand(a:bodyFile))
 endfunction

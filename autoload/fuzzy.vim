@@ -66,19 +66,16 @@ function fuzzy#CmdlineLeavePre()
     let info = cmdcomplete_info()
     if getcmdline() =~# '^\s*fin\%[d]\s' && info.selected == -1
       call setcmdline($'find {info.matches[0]}')
-    endif
-    if getcmdline() =~# '^\s*sfin\%[d]\s' && info.selected == -1
+    elseif getcmdline() =~# '^\s*sfin\%[d]\s' && info.selected == -1
       call setcmdline($'sfind {info.matches[0]}')
-    endif
-    if getcmdline() =~# '^\s*vert sfin\%[d]\s' && info.selected == -1
+    elseif getcmdline() =~# '^\s*vert sfin\%[d]\s' && info.selected == -1
       call setcmdline($'vert sfind {info.matches[0]}')
-    endif
-    if getcmdline() =~# '^\s*Buffer\s' && info.selected == -1
+    elseif getcmdline() =~# '^\s*Buffer\s' && info.selected == -1
       call setcmdline($'Buffer {info.matches[0]}')
     endif
+
     if getcmdline() =~# '^\s*LiveGrep\s'
-      let g:fuzzy_selected = info.selected != -1
-          \ ? info.matches[info.selected] : info.matches[0]
+      let g:fuzzy_selected = info.selected != -1 ? info.matches[info.selected] : info.matches[0]
       call setcmdline(info.cmdline_orig)
     endif
   endif

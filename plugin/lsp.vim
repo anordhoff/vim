@@ -34,6 +34,7 @@ let s:servers = [#{
 
 augroup lsp_setup
   autocmd!
+  autocmd FileType go,gomod,gowork,gotmpl,vim ++once packadd lsp
   autocmd User LspSetup call LspOptionsSet(s:options)
   autocmd User LspSetup call LspAddServer(s:servers)
 augroup END

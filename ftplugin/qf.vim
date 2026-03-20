@@ -13,6 +13,6 @@ nnoremap <silent><expr><buffer> <c-v> &splitright ? "\<c-w>\<cr>\<c-w>L\<c-w>p\<
 nnoremap <silent><buffer> <c-t> <c-w><cr><c-w>T
 
 " open entry in a preview window
-nnoremap <buffer><silent> p     :<c-u>let l=line('.')<cr>:exec 'aboveleft pedit +' . get(getqflist()[l - 1], 'lnum', 1) . ' ' . bufname(get(getqflist()[l - 1], 'bufnr', 0))<cr>:exec l<cr>
-nmap     <buffer><silent> <c-n> jp
-nmap     <buffer><silent> <c-p> kp
+nnoremap <silent><buffer> p <cmd>call quickfix#Preview()<cr>
+nmap     <silent><buffer> <c-n> jp
+nmap     <silent><buffer> <c-p> kp

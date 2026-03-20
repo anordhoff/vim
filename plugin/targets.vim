@@ -12,7 +12,3 @@ augroup targets_config
     \ 'Q': {'quote': [{'d': '`'}]},
     \ })
 augroup END
-
-" fix an issue with targets and folds (must be set after the augroup)
-" https://github.com/wellle/targets.vim/issues/233)
-call targets#sources#newFactories('')

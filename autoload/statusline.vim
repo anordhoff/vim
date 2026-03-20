@@ -43,9 +43,9 @@ endfunction
 function statusline#Dirvish(winid)
   let filename = fnamemodify(bufname('%'), ':~')
   if winwidth(a:winid) > 30
-    return ' ' .. statusline#Background(a:winid) .. ' ' .. l:filename .. "%= %{%statusline#Filetype()%}%* "
+    return ' ' .. statusline#Background(a:winid) .. ' ' .. filename .. "%= %{%statusline#Filetype()%}%* "
   else
-    return ' ' .. statusline#Background(a:winid) .. ' ' .. l:filename .. "%= %* "
+    return ' ' .. statusline#Background(a:winid) .. ' ' .. filename .. "%= %* "
   endif
 endfunction
 
