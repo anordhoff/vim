@@ -9,3 +9,8 @@ command -nargs=? -complete=dir Explore Dirvish <args>
 command -nargs=? -complete=dir Sexplore belowright split | silent Dirvish <args>
 command -nargs=? -complete=dir Vexplore leftabove vsplit | silent Dirvish <args>
 command -nargs=? -complete=dir Lexplore leftabove 30vsplit | silent Dirvish <args>
+
+" automatically reload when focusing a dirvish buffer
+augroup dirvish_config
+  autocmd FocusGained * if &filetype == 'dirvish' | execute (&cole ? 'Dirvish % | setl cole=2' : 'Dirvish % | setl cole=0') | endif
+augroup END

@@ -145,9 +145,9 @@ endif
 
 " open the quickfix or location list automatically when grepping
 augroup quickfix_config
-    autocmd!
-    autocmd QuickFixCmdPost vimgrep,cgetexpr cwindow | wincmd p
-    autocmd QuickFixCmdPost lvimgrep,lgetexpr lwindow | wincmd p
+  autocmd!
+  autocmd QuickFixCmdPost vimgrep,cgetexpr cwindow | wincmd p
+  autocmd QuickFixCmdPost lvimgrep,lgetexpr lwindow | wincmd p
 augroup END
 
 " wrap text in the preview window; don't add to the buffer list
