@@ -125,8 +125,8 @@ if executable('rg')
       \ .. " -g='!**/tmux/plugins/**'"
   set grepformat=%f:%l:%c:%m
 else
-  " NOTE: grep can only exclude a directory name, not a directory path.
-  " Therefore, pack/*/opt, pack/*/start, and tmux/plugins have all been omitted
+  " grep can only exclude a directory name, not a directory path. Therefore,
+  " pack/*/opt, pack/*/start, and tmux/plugins have all been omitted
   let &grepprg = "grep -rnH"
       \ .. " --exclude=tags"
       \ .. " --exclude='*.tags'"
