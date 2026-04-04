@@ -25,9 +25,6 @@ set belloff=all         " disable the bell
 set mmp=10000           " prevent memory errors when loading large buffers
 set ttimeoutlen=10      " minimal delay for escape key presses
 
-" the presence of $TMUX implies we are running on a workstation
-let g:is_workstation = exists('$TMUX')
-
 " add jobfiles and jobfiles/after to vim's runtimepath and packpath
 set runtimepath-=~/.config/vim
 set runtimepath^=~/.config/vim,~/jobfiles/vim
@@ -91,7 +88,7 @@ let &showbreak=' .. '
 " improve readability of diffs
 set diffopt+=vertical,hiddenoff,algorithm:histogram,indent-heuristic
 
-" show possible completions in a pmenu
+" show possible autocompletions in a pmenu
 set completeopt=menuone,noselect,preview
 set pumheight=10
 
@@ -155,7 +152,7 @@ augroup preview_config
   autocmd BufWinEnter * if &previewwindow | setlocal wrap | setlocal nobuflisted | endif
 augroup END
 
-" reset completeopt option after manual completion
+" reset completeopt after manual completion
 augroup completion_config
   autocmd!
   autocmd CompleteDone * pclose | setlocal completeopt=menuone,noselect,preview
@@ -226,8 +223,8 @@ if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
 endif
 
 " vimgrep the current buffer or all files in the current directory
-nnoremap <leader>l :lvimgrep //j %<left><left><left><left>
 nnoremap <leader>g :vimgrep //j **/*<left><left><left><left><left><left><left>
+nnoremap <leader>l :lvimgrep //j %<left><left><left><left>
 
 " live grep
 nnoremap <leader>r :LiveGrep<space>

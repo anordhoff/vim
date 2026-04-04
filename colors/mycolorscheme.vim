@@ -94,7 +94,7 @@ hi StatusLineNC                  cterm=none        ctermfg=7        ctermbg=none
 hi! link StatusLineTerm          Statusline
 hi! link StatusLineTermNC        StatusLineNC
 hi StatusLineInactive            cterm=none        ctermfg=7        ctermbg=18
-if g:is_workstation
+if exists('$TMUX')
   hi StatusLineActive            cterm=none        ctermfg=7        ctermbg=22
 else
   hi StatusLineActive            cterm=none        ctermfg=7        ctermbg=21
