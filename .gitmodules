@@ -70,9 +70,6 @@
 [submodule "pack/download/opt/lsp"]
 	path = pack/download/opt/lsp
 	url = https://github.com/yegappan/lsp.git
-[submodule "pack/download/opt/markdown-preview"]
-	path = pack/download/opt/markdown-preview
-	url = https://github.com/iamcco/markdown-preview.nvim.git
 [submodule "pack/download/opt/startuptime"]
 	path = pack/download/opt/startuptime
 	url = https://github.com/dstein64/vim-startuptime.git

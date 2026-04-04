@@ -12,11 +12,11 @@ function s:DelveTransformVerbose(cmd) abort
 endfunction
 let g:test#custom_transformations = {'delve': function('s:DelveTransformVerbose')}
 
-" keymaps
+" testing keymaps
 nnoremap <silent> <leader>tt :TestNearest<cr>
 nnoremap <silent> <leader>tv :TestNearest -v<cr>
+nnoremap <silent> <leader>T  :TestFile<cr>
 nnoremap <silent> <leader>tc :TestClass<cr>
-nnoremap <silent> <leader>tf :TestFile<cr>
 nnoremap <silent> <leader>ta :TestSuite<cr>
 nnoremap <silent> <leader>tl :TestLast<cr>
 nnoremap <silent> <leader>tg :TestVisit<cr>

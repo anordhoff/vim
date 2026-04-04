@@ -15,19 +15,11 @@ endif
 .PHONY: init
 init:
 	git submodule update --init
-	npm install --no-package-lock --prefix pack/download/opt/markdown-preview pack/download/opt/markdown-preview
 
 # make update
 .PHONY: update
 update:
 	git submodule update --remote --merge
-	npm install --no-package-lock --prefix pack/download/opt/markdown-preview pack/download/opt/markdown-preview
-
-# make pull
-.PHONY: pull
-pull:
-	git pull
-	npm install --no-package-lock --prefix pack/download/opt/markdown-preview pack/download/opt/markdown-preview
 
 # make add submodule=https://github.com/tpope/vim-repeat.git path=pack/download/start/repeat
 .PHONY: add

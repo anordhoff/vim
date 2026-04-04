@@ -11,7 +11,6 @@ set ignorecase          " case-insensitive searching...
 set smartcase           " ...but not if the search contains a capital letter
 set splitright          " split vertical windows to the right of current window
 set splitbelow          " split horizontal windows below current window
-set splitkeep=screen    " keep text on the same line when splitting windows
 set hidden              " allow switching between buffers without saving
 set autoread            " automatically read file changes
 set noshowmode          " hide the mode from the bottom row

@@ -1,4 +1,4 @@
-" extend vim-husk such that ctrl-y and ctrl-w mimic bash
+" extend vim-husk so that ctrl-y and ctrl-w mimic bash
 cnoremap <expr> <c-y> pumvisible() ? "\<c-y>" : "\<c-r>\""
 cnoremap <c-w> <cmd>let g:iskeyword=&iskeyword<bar>
   \ set iskeyword=
