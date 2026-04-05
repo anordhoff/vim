@@ -106,7 +106,7 @@ set wildignore+=tags,*.tags,.git/**,**/bin/**,**/vendor/**,**/node_modules/**,**
 let &wildignore ..= gitignore#WildignoreList('.gitignore')
 
 " use the fuzzy-file-picker function
-if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
+if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
   set findfunc=fuzzy#Find
 endif
 
@@ -169,7 +169,7 @@ augroup cursor
 augroup END
 
 " enable fuzzy autocompletion when using :find or :LiveGrep
-if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
+if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
   augroup fuzzy
     autocmd CmdlineEnter [\:] let g:filescache = []
     autocmd CmdlineLeave [\:] set wildmode=longest:full,full
@@ -214,7 +214,7 @@ nnoremap <leader>v :vert sfind<space>
 nnoremap <leader>b :ls<cr>:b **/*
 
 " fuzzy buffer navigation
-if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
+if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
   nnoremap <leader>b :Buffer<space>
 endif
 
@@ -278,11 +278,9 @@ command -nargs=+ -complete=file_in_path -bar LGrep lgetexpr misc#Grep(<f-args>)
 cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')  ? 'Grep'  : 'grep'
 cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep'
 
-if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
-  " fuzzy buffer navigation
-  command -nargs=1 -complete=customlist,fuzzy#Buffers Buffer call fuzzy#SwitchBuffer(<q-args>)
-
-  " live grep
+" fuzzy buffer navigation and live grep
+if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
+  command -nargs=? -complete=customlist,fuzzy#Buffers Buffer call fuzzy#SwitchBuffer(<q-args>)
   command -nargs=+ -complete=customlist,fuzzy#LiveGrep LiveGrep call fuzzy#VisitFile()
 endif
 
