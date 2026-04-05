@@ -140,41 +140,35 @@ endif
 " --------------------------------------
 
 " open the quickfix or location list automatically when grepping
-augroup quickfix_config
-  autocmd!
+augroup quickfix
   autocmd QuickFixCmdPost vimgrep,cgetexpr cwindow | wincmd p
   autocmd QuickFixCmdPost lvimgrep,lgetexpr lwindow | wincmd p
 augroup END
 
 " wrap text in the preview window; don't add to the buffer list
-augroup preview_config
-  autocmd!
+augroup preview
   autocmd BufWinEnter * if &previewwindow | setlocal wrap | setlocal nobuflisted | endif
 augroup END
 
 " reset completeopt after manual completion
-augroup completion_config
-  autocmd!
+augroup completion
   autocmd CompleteDone * pclose | setlocal completeopt=menuone,noselect,preview
 augroup END
 
 " enable the cursorline on the active window
-augroup cursorline_config
-  autocmd!
+augroup cursorline
   autocmd BufEnter,WinEnter * setlocal cursorline
-  autocmd BufLeave,WinLeave * setlocal nocursorline
+  autocmd WinLeave * setlocal nocursorline
 augroup END
 
 " restore cursor to previous location when opening a file
-augroup cursor_config
-  autocmd!
+augroup cursor
   autocmd BufReadPost * call misc#RestoreCursor()
 augroup END
 
 " enable fuzzy autocompletion when using :find or :LiveGrep
 if v:version > 901 || (v:version == 901 && has('patch-9.1.0831'))
-  augroup fuzzy_config
-    autocmd!
+  augroup fuzzy
     autocmd CmdlineEnter [\:] let g:filescache = []
     autocmd CmdlineLeave [\:] set wildmode=longest:full,full
     autocmd CmdlineChanged [\:] call fuzzy#CmdlineChanged()
@@ -209,7 +203,7 @@ xnoremap <expr> * misc#Search(1)
 xnoremap <expr> # misc#Search(0)
 
 " clear search highlighting
-nnoremap <silent> <c-l> :nohlsearch<cr>
+nnoremap <silent> <c-l> <cmd>nohlsearch<cr>
 
 " file and buffer navigation
 nnoremap <leader>f :find<space>
@@ -236,21 +230,21 @@ nnoremap gd <c-]>
 inoremap <expr> <tab> completion#TabComplete(0)
 inoremap <expr> <s-tab> completion#TabComplete(1)
 
-" maximize the current window
-nnoremap <silent> <leader>z :tabnew %<cr><c-o>
+" maximize the current window in a new tab
+nnoremap <silent> <leader>z <cmd>tabnew %<cr><c-o>
 
 " toggle the quickfix list window and maximize window to the width of vim
-nnoremap <silent> <m-q> :call quickfix#ToggleQuickfixlist()<cr>
+nnoremap <silent> <m-q> <cmd>call quickfix#ToggleQuickfixlist()<cr>
 
 " toggle the location list window
-nnoremap <silent> <m-l> :call quickfix#ToggleLocationlist()<cr>
+nnoremap <silent> <m-l> <cmd>call quickfix#ToggleLocationlist()<cr>
 
 " get change from local or remote buffer when using mergetool
 nnoremap gh <cmd>set diffopt-=linematch:40<bar>diffget //2<bar>set diffopt+=linematch:40<bar>diffupdate<cr>
 nnoremap gl <cmd>set diffopt-=linematch:40<bar>diffget //3<bar>set diffopt+=linematch:40<bar>diffupdate<cr>
 
 " copy the absolute path of the current file to the unnamed register
-nnoremap <leader>y :let @" = expand("%:p")<cr>
+nnoremap <leader>y <cmd>let @" = expand("%:p")<cr>
 
 " scrolling with the mouse or trackpad moves the screen instead of the cursor
 noremap <scrollwheelup> <c-y>
@@ -274,7 +268,7 @@ inoremap <middlemouse> <nop>
 " commands
 " --------------------------------------
 
-" smoother grepping
+" improved grepping
 command -nargs=+ -complete=file_in_path -bar Grep  cgetexpr misc#Grep(<f-args>)
 command -nargs=+ -complete=file_in_path -bar LGrep lgetexpr misc#Grep(<f-args>)
 
@@ -304,8 +298,7 @@ command Inspect echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name"
 set statusline=%!statusline#Line(g:statusline_winid)
 
 " quickfix, location list, dirvish, and terminal buffer status lines
-augroup statusline_config
-  autocmd!
+augroup statusline
   autocmd Filetype qf setlocal statusline=%!statusline#QuickfixList(g:statusline_winid)
   autocmd Filetype dirvish setlocal statusline=%!statusline#Dirvish(g:statusline_winid)
   autocmd TerminalOpen * setlocal statusline=%!statusline#Term(g:statusline_winid)
@@ -327,8 +320,7 @@ nnoremap <silent> <m-n> <cmd>call notebook#Project(g:projectsdir)<cr>
 nnoremap <silent> <m-t> <cmd>call notebook#Todo(g:todofile)<cr>
 
 " prevent notebook pages from being added to the buffer list
-augroup notebook_config
-  autocmd!
+augroup notebook
   autocmd BufNewFile,BufRead ~/notebook/**/*.txt,~/notebook/**/*.md setlocal nobuflisted
 augroup END
 
@@ -346,9 +338,7 @@ nnoremap <silent> <m-v> <cmd>call term#Toggle(1)<cr>
 tnoremap <silent> <m-s> <cmd>call term#Toggle(0)<cr>
 tnoremap <silent> <m-v> <cmd>call term#Toggle(1)<cr>
 
-augroup terminal_config
-  autocmd!
-
+augroup terminal
   " prevent the terminal from being added to the buffer list
   autocmd TerminalOpen * setlocal nobuflisted fillchars=eob:\  nonumber
 
@@ -356,5 +346,3 @@ augroup terminal_config
   autocmd TerminalOpen * let g:termbuf = bufnr('%') | let g:termwin = win_getid()
   autocmd TabNew * if getbufvar(bufnr('%'), '&buftype') == 'terminal' | let g:termwin = win_getid() | endif
 augroup END
-
-" }}}

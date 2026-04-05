@@ -20,10 +20,3 @@ nnoremap <silent> <leader>tc :TestClass<cr>
 nnoremap <silent> <leader>ta :TestSuite<cr>
 nnoremap <silent> <leader>tl :TestLast<cr>
 nnoremap <silent> <leader>tg :TestVisit<cr>
-
-" delve keymaps
-augroup test_config
-  autocmd!
-  autocmd Filetype go nnoremap <silent> z<cr> :call debug#Delve(0)<cr>
-  autocmd Filetype go nnoremap <silent> Z<cr> :call debug#Delve(1)<cr>
-augroup END

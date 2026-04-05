@@ -3,6 +3,9 @@ if exists('b:did_custom_ftplugin')
 endif
 let b:did_custom_ftplugin = 1
 
+" automatically reload when focusing a dirvish buffer
+autocmd FocusGained <buffer> execute (&cole ? 'Dirvish % | setl cole=2' : 'Dirvish % | setl cole=0')
+
 " unmap default reload and edit mappings
 unmap <buffer> R
 unmap <buffer> i

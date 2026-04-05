@@ -2,7 +2,6 @@
 let g:targets_gracious = 1
 
 augroup targets_config
-  autocmd!
   autocmd User targets#mappings#user call targets#mappings#extend({
     \ 'b': {'pair': [{'o': '(', 'c': ')'}]},
     \ 'B': {'pair': [{'o': '{', 'c': '}'}]},

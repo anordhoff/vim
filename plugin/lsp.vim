@@ -36,14 +36,11 @@ let s:servers = [#{
   \ }]
 
 augroup lsp_setup
-  autocmd!
   autocmd FileType go,gomod,gowork,gotmpl,vim ++once packadd lsp
   autocmd User LspSetup call LspOptionsSet(s:options) | call LspAddServer(s:servers)
 augroup END
 
 augroup lsp_attach
-  autocmd!
-
   " normal mode keymaps
   autocmd User LspAttached nnoremap <silent><buffer> gd <cmd>LspGotoDefinition<cr>
   autocmd User LspAttached nnoremap <silent><buffer> gD <cmd>LspGotoDeclaration<cr>
@@ -60,10 +57,7 @@ augroup lsp_attach
   autocmd User LspAttached nnoremap <silent><buffer> <leader>d <cmd>LspDiag current<cr>
   autocmd User LspAttached nnoremap <silent><buffer> <leader>D <cmd>LspDiag show<cr>
 
-  " insert mode keymaps
+  " insert mode keymaps (https://github.com/yegappan/lsp/issues/781)
   autocmd User LspAttached inoremap <silent><buffer> <c-s> <cmd>LspShowSignature<cr>
-
-  " trigger completion when typing a '.' char
-  " TODO: built-in trigger char autocompletion (https://github.com/yegappan/lsp/issues/781)
   autocmd User LspAttached inoremap <buffer> . .<c-x><c-o>
 augroup END
