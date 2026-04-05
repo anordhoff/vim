@@ -2,6 +2,8 @@
 " settings
 " --------------------------------------
 
+" TODO: should I use fuzzyy/fuzzbox instead of implementing my own fuzzy search (https://github.com/vim-fuzzbox/fuzzbox.vim)
+
 set notermguicolors     " disable 24-bit colors
 set t_Co=16             " use the 16 color palette
 set number              " enable line numbers

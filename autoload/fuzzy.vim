@@ -52,13 +52,25 @@ endfunction
 
 
 " enable fuzzy wildmode when using :find, :sfind, :vert sfind, :Buffer, or :LiveGrep
+let s:grep_timer = -1
 function fuzzy#CmdlineChanged()
   let cmd = getcmdline()
-  if cmd =~# '^\s*\%(vert \)\?s\?fin\%[d]\s' || cmd =~# '^\s*Buffer\s' || cmd =~# '^\s*LiveGrep\s'
-    set wildmode=noselect:lastused,full
+  if cmd =~# '^\s*\%(vert \)\?s\?fin\%[d]\s' || cmd =~# '^\s*Buffer\s'
+    if &wildmode != 'noselect:lastused,full'
+      set wildmode=noselect:lastused,full
+    endif
     call wildtrigger()
+  elseif cmd =~# '^\s*LiveGrep\s'
+    if &wildmode != 'noselect:lastused,full'
+      set wildmode=noselect:lastused,full
+    endif
+    if s:grep_timer != -1
+      call timer_stop(s:grep_timer)
+    endif
+    let s:grep_timer = timer_start(200, {_ -> getcmdtype() ==# ':' ? wildtrigger() : 0})
   endif
 endfunction
+
 
 " handle <enter> keypress when using :find, :sfind, :vert sfind, :Buffer, or :LiveGrep
 function fuzzy#CmdlineLeavePre()
