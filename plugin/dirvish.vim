@@ -8,4 +8,4 @@ nnoremap <silent> _ <cmd>Dirvish .<cr>
 command -nargs=? -complete=dir Explore Dirvish <args>
 command -nargs=? -complete=dir Sexplore belowright split | silent Dirvish <args>
 command -nargs=? -complete=dir Vexplore leftabove vsplit | silent Dirvish <args>
-command -nargs=? -complete=dir Lexplore leftabove 30vsplit | silent Dirvish <args>
+command -nargs=? -complete=dir Lexplore leftabove 40vsplit | silent Dirvish <args>

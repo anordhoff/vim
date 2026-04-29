@@ -66,7 +66,7 @@ hi! link ColorColumn             CursorLine
 hi LineNr                        cterm=none        ctermfg=20       ctermbg=none
 hi SignColumn                    cterm=none        ctermfg=7        ctermbg=none
 hi FoldColumn                    cterm=none        ctermfg=7        ctermbg=none
-hi Folded                        cterm=none        ctermfg=6        ctermbg=none
+hi Folded                        cterm=none        ctermfg=3        ctermbg=none
 
 " --------------------------------------
 " window/tab delimiters
@@ -103,7 +103,7 @@ endif
 " --------------------------------------
 " file navigation / searching
 " --------------------------------------
-hi Directory                     cterm=none        ctermfg=7        ctermbg=none
+hi Directory                     cterm=none        ctermfg=4        ctermbg=none
 hi Search                        cterm=reverse     ctermfg=12       ctermbg=none
 hi IncSearch                     cterm=reverse     ctermfg=13       ctermbg=none
 hi CurSearch                     cterm=reverse     ctermfg=13       ctermbg=none
@@ -122,8 +122,6 @@ hi PmenuMatchSel                 cterm=none        ctermfg=6        ctermbg=23
 " quickfix
 " --------------------------------------
 hi QuickFixLine                  cterm=none        ctermfg=none     ctermbg=23
-hi qfFileName                    cterm=none        ctermfg=7        ctermbg=none
-hi qfLineNr                      cterm=none        ctermfg=8        ctermbg=none
 
 " --------------------------------------
 " visual aid

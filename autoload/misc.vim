@@ -32,3 +32,13 @@ function misc#RestoreCursor()
     exec 'normal! g`"zz'
   endif
 endfunction
+
+function misc#Preview(...)
+  let file =""
+  if a:0 == 1
+    let file = a:1
+  else
+    let file = expand('%')
+  endif
+  exec 'Start! grip -b ' .. file
+endfunction

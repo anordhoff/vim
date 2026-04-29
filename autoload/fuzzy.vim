@@ -15,80 +15,27 @@ function fuzzy#Find(arg, _)
   return a:arg == '' ? g:filescache : matchfuzzy(g:filescache, a:arg)
 endfunction
 
-
-" fuzzy buffer picker
-function fuzzy#Buffers(arglead, cmdline, cursorpos)
-  let bufs = getbufinfo(#{buflisted: 1})
-  let names = map(bufs, {_, b -> empty(b.name) ? $'[{b.bufnr}]' : fnamemodify(b.name, ':~:.')})
-  return a:arglead == '' ? names : matchfuzzy(names, a:arglead)
-endfunction
-
-" switch to a buffer by its display name
-function fuzzy#SwitchBuffer(name)
-  for buf in getbufinfo(#{buflisted: 1})
-    let display = empty(buf.name) ? $'[{buf.bufnr}]' : fnamemodify(buf.name, ':~:.')
-    if display ==# a:name
-      execute $'buffer {buf.bufnr}'
-      return
-    endif
-  endfor
-  execute $'buffer {a:name}'
-endfunction
-
-
-" live-grep
-function fuzzy#LiveGrep(arglead, cmdline, cursorpos)
-  if match(&grepprg, '\$\*') == -1 | let &grepprg ..= ' $*' | endif
-  let cmd = substitute(&grepprg, '\$\*', shellescape(escape(a:arglead, '\')), '')
-  return len(a:arglead) > 1 ? systemlist(cmd) : []
-endfunction
-
-function fuzzy#VisitFile()
-  let item = getqflist(#{lines: [g:fuzzy_selected]}).items[0]
-  let pos  = '[0,\ item.lnum,\ item.col,\ 0]'
-  exe $':b +call\ setpos(".",\ {pos}) {item.bufnr}'
-  call setbufvar(item.bufnr, '&buflisted', 1)
-endfunction
-
-
-" enable fuzzy wildmode when using :find, :sfind, :vert sfind, :Buffer, or :LiveGrep
-let s:grep_timer = -1
+" enable fuzzy wildmode when using :find, :sfind, and :vert sfind
 function fuzzy#CmdlineChanged()
   let cmd = getcmdline()
-  if cmd =~# '^\s*\%(vert \)\?s\?fin\%[d]\s' || cmd =~# '^\s*Buffer\s'
+  if cmd =~# '^\s*\%(vert \)\?s\?fin\%[d]\s'
     if &wildmode != 'noselect:lastused,full'
       set wildmode=noselect:lastused,full
     endif
     call wildtrigger()
-  elseif cmd =~# '^\s*LiveGrep\s'
-    if &wildmode != 'noselect:lastused,full'
-      set wildmode=noselect:lastused,full
-    endif
-    if s:grep_timer != -1
-      call timer_stop(s:grep_timer)
-    endif
-    let s:grep_timer = timer_start(200, {_ -> getcmdtype() ==# ':' ? wildtrigger() : 0})
   endif
 endfunction
 
-
-" handle <enter> keypress when using :find, :sfind, :vert sfind, :Buffer, or :LiveGrep
+" handle <enter> keypress when using :find, :sfind, or :vert sfind
 function fuzzy#CmdlineLeavePre()
   if get(cmdcomplete_info(), 'matches', []) != []
     let info = cmdcomplete_info()
     if getcmdline() =~# '^\s*fin\%[d]\s' && info.selected == -1
-      call setcmdline($'find {info.matches[0]}')
+      call setcmdline('find ' .. info.matches[0])
     elseif getcmdline() =~# '^\s*sfin\%[d]\s' && info.selected == -1
-      call setcmdline($'sfind {info.matches[0]}')
+      call setcmdline('sfind ' .. info.matches[0])
     elseif getcmdline() =~# '^\s*vert sfin\%[d]\s' && info.selected == -1
-      call setcmdline($'vert sfind {info.matches[0]}')
-    elseif getcmdline() =~# '^\s*Buffer\s' && info.selected == -1
-      call setcmdline($'Buffer {info.matches[0]}')
-    endif
-
-    if getcmdline() =~# '^\s*LiveGrep\s'
-      let g:fuzzy_selected = info.selected != -1 ? info.matches[info.selected] : info.matches[0]
-      call setcmdline(info.cmdline_orig)
+      call setcmdline('vert sfind ' .. info.matches[0])
     endif
   endif
 endfunction

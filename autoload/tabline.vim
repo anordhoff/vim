@@ -42,7 +42,7 @@ function tabline#Label(n)
   elseif bufname =~ '^fugitive://'
     let name = 'fugitive://' .. fnamemodify(FugitiveReal(bufname), ':.')
   else
-    let name = bufname
+    let name = fnamemodify(bufname, ":~:.")
   endif
   return wincount .. name .. modified
 endfunction

@@ -95,7 +95,7 @@ set completeopt=menuone,noselect,preview
 set pumheight=10
 
 " use a wildmenu for command line completion
-set wildoptions=pum,tagfile
+set wildoptions=pum
 set wildmode=longest:full,full
 set wildignorecase
 
@@ -168,7 +168,7 @@ augroup cursor
   autocmd BufReadPost * call misc#RestoreCursor()
 augroup END
 
-" enable fuzzy autocompletion when using :find or :LiveGrep
+" enable fuzzy autocompletion when using :find
 if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
   augroup fuzzy
     autocmd CmdlineEnter [\:] let g:filescache = []
@@ -190,10 +190,6 @@ let mapleader = "\<space>"
 inoremap <c-r>+ <c-r><c-r>+
 inoremap <c-r>* <c-r><c-r>*
 
-" ctrl-p and ctrl-n match the current command-line
-cnoremap <c-p> <up>
-cnoremap <c-n> <down>
-
 " preserve history navigation when cmdline-autocompletion menu is open
 cnoremap <expr> <up>   wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
 cnoremap <expr> <down> wildmenumode() ? "\<c-e>\<down>" : "\<down>"
@@ -207,23 +203,24 @@ xnoremap <expr> # misc#Search(0)
 " clear search highlighting
 nnoremap <silent> <c-l> <cmd>nohlsearch<cr>
 
-" file and buffer navigation
-nnoremap <leader>f :find<space>
-nnoremap <leader>s :sfind<space>
-nnoremap <leader>v :vert sfind<space>
-nnoremap <leader>b :ls<cr>:b **/*
+" buffer navigation
+nnoremap <leader>b :ls<cr>:b<space>
 
-" fuzzy buffer navigation
+" file navigation
 if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
-  nnoremap <leader>b :Buffer<space>
+  nnoremap <leader>f :find<space>
+  nnoremap <leader>s :sfind<space>
+  nnoremap <leader>v :vert sfind<space>
+else
+  nnoremap <leader>f :fin **/*
+  nnoremap <leader>s :sf **/*
+  nnoremap <leader>v :vert sf **/*
 endif
 
 " vimgrep the current buffer or all files in the current directory
+" TODO: should I use :Grep and :LGrep?
 nnoremap <leader>g :vimgrep //j **/*<left><left><left><left><left><left><left>
 nnoremap <leader>l :lvimgrep //j %<left><left><left><left>
-
-" live grep
-nnoremap <leader>r :LiveGrep<space>
 
 " jump to the definition in the tag file
 nnoremap gd <c-]>
@@ -278,17 +275,14 @@ command -nargs=+ -complete=file_in_path -bar LGrep lgetexpr misc#Grep(<f-args>)
 cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')  ? 'Grep'  : 'grep'
 cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep'
 
-" fuzzy buffer navigation and live grep
-if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
-  command -nargs=? -complete=customlist,fuzzy#Buffers Buffer call fuzzy#SwitchBuffer(<q-args>)
-  command -nargs=+ -complete=customlist,fuzzy#LiveGrep LiveGrep call fuzzy#VisitFile()
-endif
-
 " clear the specified register
 command -nargs=1 Clear call misc#Clear(<q-args>)
 
 " get the name of the highlight group under the cursor
 command Inspect echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+
+" open a markdown file in the browser
+command -nargs=? -complete=file Preview call misc#Preview(<f-args>)
 
 
 " --------------------------------------

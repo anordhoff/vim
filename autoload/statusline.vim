@@ -2,7 +2,7 @@ function statusline#Line(winid)
   let statusline   = ' '                            " left padding
   let statusline ..= statusline#Background(a:winid) " set status line background color
   let statusline ..= '%{%statusline#BufferNr()%} '  " buffer number
-  let statusline ..= '%f  '                         " filepath
+  let statusline ..= '%{statusline#Filename()}  '   " filepath
   let statusline ..= '%{statusline#NopluginFlag()}' " noplugin flag
   let statusline ..= '%H%W%R%M'                     " help,preview,read-only, and modified flags
   let statusline ..= '%= '                          " right align
@@ -17,6 +17,10 @@ endfunction
 " set background depending on whether the window is active
 function statusline#Background(winid)
   return a:winid == win_getid() ? '%#StatusLineActive#' : '%#StatusLineInactive#'
+endfunction
+
+function statusline#Filename()
+  return fnamemodify(bufname('%'), ':~:.')
 endfunction
 
 " hide buffer number if buffer sets nobuflisted
@@ -42,7 +46,7 @@ endfunction
 " dirvish statusline
 function statusline#Dirvish(winid)
   let filename = fnamemodify(bufname('%'), ':~')
-  if winwidth(a:winid) > 30
+  if winwidth(a:winid) > 40
     return ' ' .. statusline#Background(a:winid) .. ' ' .. filename .. "%= %{%statusline#Filetype()%}%* "
   else
     return ' ' .. statusline#Background(a:winid) .. ' ' .. filename .. "%= %* "
