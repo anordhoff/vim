@@ -34,7 +34,7 @@ function misc#RestoreCursor()
 endfunction
 
 function misc#Preview(...)
-  let file =""
+  let file = ""
   if a:0 == 1
     let file = a:1
   else

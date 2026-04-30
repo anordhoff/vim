@@ -144,10 +144,11 @@ hi Todo                          cterm=none        ctermfg=8        ctermbg=none
 " --------------------------------------
 " diff
 " --------------------------------------
-hi DiffAdd                       cterm=reverse     ctermfg=10       ctermbg=none
+hi DiffAdd                       cterm=none        ctermfg=7        ctermbg=21
 hi DiffChange                    cterm=none        ctermfg=none     ctermbg=17
 hi DiffDelete                    cterm=none        ctermfg=1        ctermbg=none
-hi DiffText                      cterm=reverse     ctermfg=11       ctermbg=none
+hi DiffText                      cterm=none        ctermfg=15       ctermbg=24
+hi DiffTextAdd                   cterm=none        ctermfg=15       ctermbg=21
 
 " --------------------------------------
 " spelling

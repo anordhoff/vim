@@ -159,8 +159,9 @@ augroup END
 
 " enable the cursorline on the active window
 augroup cursorline
-  autocmd BufEnter,WinEnter * setlocal cursorline
+  autocmd BufEnter,WinEnter * if !&diff | setlocal cursorline | endif
   autocmd WinLeave * setlocal nocursorline
+  autocmd OptionSet diff if v:option_new | setlocal nocursorline | else | setlocal cursorline | endif
 augroup END
 
 " restore cursor to previous location when opening a file
