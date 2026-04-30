@@ -218,11 +218,6 @@ else
   nnoremap <leader>v :vert sf **/*
 endif
 
-" vimgrep the current buffer or all files in the current directory
-" TODO: should I use :Grep and :LGrep?
-nnoremap <leader>g :vimgrep //j **/*<left><left><left><left><left><left><left>
-nnoremap <leader>l :lvimgrep //j %<left><left><left><left>
-
 " jump to the definition in the tag file
 nnoremap gd <c-]>
 
@@ -284,6 +279,11 @@ command Inspect echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name"
 
 " open a markdown file in the browser
 command -nargs=? -complete=file Preview call misc#Preview(<f-args>)
+
+" custom Browse command to enable :GBrowse (https://github.com/tpope/vim-fugitive/issues/2354)
+" NOTE: shellescape(file, 1) in dist#vim9#Open() escapes # to \#, which causes an error in the browser
+" command -nargs=1 Browse call dist#vim9#Open(<q-args>)
+command -nargs=1 Browse call misc#Browse(<q-args>)
 
 
 " --------------------------------------

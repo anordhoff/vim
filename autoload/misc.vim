@@ -1,19 +1,11 @@
-function misc#Grep(...)
-  let output = system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
-  if v:shell_error
-    echohl ErrorMsg | echo 'E480: No match: ' .. join(a:000, ' ') | echohl None
+function misc#Browse(url)
+  if has('mac') || has('macunix')
+    call job_start(['open', a:url])
+  elseif executable('xdg-open')
+    call job_start(['xdg-open', a:url])
+  else
+    echoerr 'Browse: no launcher found'
   endif
-  return output
-endfunction
-
-function misc#Search(forward) abort
-  let chunks = getregion(getpos('.'), getpos('v'), #{type: mode()})
-  call map(chunks, {_, v -> escape(v, '\')})
-  let pat = '\V' .. join(chunks, '\n')
-  call setreg('/', pat)
-  call histadd('/', pat)
-  let v:searchforward = a:forward
-  return "\<Esc>" .. v:count1 .. 'n'
 endfunction
 
 function misc#Clear(chars)
@@ -24,13 +16,12 @@ function misc#Clear(chars)
     \ "'. Execute :wviminfo! to persist changes"
 endfunction
 
-function misc#RestoreCursor()
-  if &ft =~# 'commit\|rebase'
-    return
+function misc#Grep(...)
+  let output = system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
+  if v:shell_error
+    echohl ErrorMsg | echo 'E480: No match: ' .. join(a:000, ' ') | echohl None
   endif
-  if line("'\"") > 1 && line("'\"") <= line("$")
-    exec 'normal! g`"zz'
-  endif
+  return output
 endfunction
 
 function misc#Preview(...)
@@ -41,4 +32,22 @@ function misc#Preview(...)
     let file = expand('%')
   endif
   exec 'Start! grip -b ' .. file
+endfunction
+function misc#RestoreCursor()
+  if &ft =~# 'commit\|rebase'
+    return
+  endif
+  if line("'\"") > 1 && line("'\"") <= line("$")
+    exec 'normal! g`"zz'
+  endif
+endfunction
+
+function misc#Search(forward) abort
+  let chunks = getregion(getpos('.'), getpos('v'), #{type: mode()})
+  call map(chunks, {_, v -> escape(v, '\')})
+  let pat = '\V' .. join(chunks, '\n')
+  call setreg('/', pat)
+  call histadd('/', pat)
+  let v:searchforward = a:forward
+  return "\<Esc>" .. v:count1 .. 'n'
 endfunction
