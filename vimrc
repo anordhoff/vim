@@ -300,6 +300,7 @@ augroup statusline
 augroup END
 
 set tabline=%!tabline#Line()
+set tabpanelopt=columns:30,vert
 
 
 " --------------------------------------
