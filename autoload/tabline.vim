@@ -1,4 +1,4 @@
-function tabline#Line()
+function tabline#Line() abort
   let tabline = '%#StatusLine#' .. ' ' .. '%#TabLine#'
   for tab in range(tabpagenr('$'))
     if tab + 1 == tabpagenr()
@@ -42,7 +42,24 @@ function tabline#Label(n)
   elseif bufname =~ '^fugitive://'
     let name = 'fugitive://' .. fnamemodify(FugitiveReal(bufname), ':.')
   else
-    let name = fnamemodify(bufname, ":~:.")
+    let name = fnamemodify(bufname, ':~:.')
   endif
   return wincount .. name .. modified
+endfunction
+
+function tabline#Panel() abort
+  let curr = g:actual_curtabpage
+  let buflist = tabpagebuflist(curr)
+  let winnr = tabpagewinnr(curr)
+  let bufname = bufname(buflist[winnr - 1])
+  let name = pathshorten(fnamemodify(bufname, ':~:.'))
+  let prefix = printf('%2d ', curr)
+
+  " if necessary, trim the beginning of the filename
+  let width = str2nr(matchstr(&tabpanelopt, 'columns:\zs\d\+'))
+  if strchars(prefix .. name) >= width
+    let taillen = width - strchars(prefix) - 2
+    let name = '<' .. strcharpart(name, strchars(name) - taillen)
+  endif
+  return '%#LineNr#' .. prefix .. '%*' .. name
 endfunction

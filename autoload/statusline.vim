@@ -1,4 +1,4 @@
-function statusline#Line(winid)
+function statusline#Line(winid) abort
   let statusline   = ' '                            " left padding
   let statusline ..= statusline#Background(a:winid) " set status line background color
   let statusline ..= '%{%statusline#BufferNr()%} '  " buffer number

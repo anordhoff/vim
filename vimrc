@@ -299,8 +299,21 @@ augroup statusline
   autocmd TerminalOpen * setlocal statusline=%!statusline#Term(g:statusline_winid)
 augroup END
 
+" enable the tabline
+set showtabline=1
 set tabline=%!tabline#Line()
+
+" keep the tabpanel disabled by default
+set showtabpanel=0
 set tabpanelopt=columns:30,vert
+set tabpanel=%!tabline#Panel()
+
+" enable, disable, or toggle the tabpanel
+nnoremap [op <cmd>set showtabpanel=1 <bar> echo 'set showtabpanel=1'<cr>
+nnoremap ]op <cmd>set showtabpanel=0 <bar> echo 'set showtabpanel=0'<cr>
+nnoremap <expr> yop &showtabpanel ?
+  \ "<cmd>set showtabpanel=0 <bar> echo 'set showtabpanel=0'<cr>" :
+  \ "<cmd>set showtabpanel=1 <bar> echo 'set showtabpanel=1'<cr>"
 
 
 " --------------------------------------
