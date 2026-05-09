@@ -21,6 +21,7 @@ function misc#DiffGet(target)
   let filepath = fnamemodify(expand('%'), ':.')
   exec 'diffget //' .. a:target .. '/' .. filepath
   set diffopt+=linematch:60
+  diffupdate
 endfunction
 
 function misc#Grep(...)

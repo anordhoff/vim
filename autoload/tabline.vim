@@ -71,7 +71,7 @@ function tabline#Panel() abort
   endwhile
 
   " if necessary, trim the beginning of the filename
-  if strchars(prefix .. name) >= width
+  if strchars(prefix .. name) > width
     let len = width - strchars(prefix) - 1
     let name = '<' .. strcharpart(name, strchars(name) - len)
   endif
