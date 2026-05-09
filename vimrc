@@ -86,7 +86,7 @@ set breakindent
 let &showbreak=' .. '
 
 " improve readability of diffs
-set diffopt+=vertical,hiddenoff,algorithm:histogram,indent-heuristic,linematch:60
+set diffopt+=vertical,hiddenoff,algorithm:histogram,indent-heuristic
 
 " show possible autocompletions in a pmenu
 set completeopt=menuone,noselect,preview

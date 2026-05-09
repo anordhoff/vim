@@ -17,10 +17,8 @@ function misc#Clear(chars)
 endfunction
 
 function misc#DiffGet(target)
-  set diffopt-=linematch:60
   let filepath = fnamemodify(expand('%'), ':.')
   exec 'diffget //' .. a:target .. '/' .. filepath
-  set diffopt+=linematch:60
   diffupdate
 endfunction
 
