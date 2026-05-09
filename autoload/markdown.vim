@@ -5,6 +5,7 @@ function markdown#IncrementList()
   if !empty(match)
     let indent = match[1]
     let num = str2nr(match[2]) + 1
+
     " if the line only has the number and no content, remove it
     if line =~ '^\s*\d\+\.\s*$'
       call setline('.', '')

@@ -36,6 +36,7 @@ set packpath+=~/jobfiles/vim/after
 " load internal plugins
 if &loadplugins
   packadd cfilter
+  packadd comment
 endif
 
 " disable netrw in favor of vim-dirvish
@@ -45,10 +46,8 @@ let g:loaded_netrwPlugin = 1
 " enable filetype detection and loading of plugin and indent files
 filetype plugin indent on
 
-" enable syntax highlighting
+" enable syntax highilighting and load a custom colorscheme
 syntax enable
-
-" load custom colorscheme
 colorscheme mycolorscheme
 
 " set the cursor shape to a bar in insert mode
@@ -105,6 +104,7 @@ let &wildignore ..= gitignore#WildignoreList('.gitignore')
 
 " use ripgrep as the external grep program if available
 if executable('rg')
+  set grepformat=%f:%l:%c:%m
   let &grepprg = "rg --vimgrep"
       \ .. " -g='!tags'"
       \ .. " -g='!*.tags'"
@@ -115,10 +115,10 @@ if executable('rg')
       \ .. " -g='!**/pack/*/opt/**'"
       \ .. " -g='!**/pack/*/start/**'"
       \ .. " -g='!**/tmux/plugins/**'"
-  set grepformat=%f:%l:%c:%m
 else
   " grep can only exclude a directory name, not a directory path. Therefore,
   " pack/*/opt, pack/*/start, and tmux/plugins have all been omitted
+  set grepformat=%f:%l:%m
   let &grepprg = "grep -rnH"
       \ .. " --exclude=tags"
       \ .. " --exclude='*.tags'"
@@ -126,7 +126,6 @@ else
       \ .. " --exclude-dir=bin"
       \ .. " --exclude-dir=vendor"
       \ .. " --exclude-dir=node_modules"
-  set grepformat=%f:%l:%m
 endif
 
 
@@ -271,8 +270,6 @@ command Inspect echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name"
 command -nargs=? -complete=file Preview call misc#Preview(<f-args>)
 
 " custom Browse command to enable :GBrowse (https://github.com/tpope/vim-fugitive/issues/2354)
-" NOTE: shellescape(file, 1) in dist#vim9#Open() escapes # to \#, which causes an error in the browser
-" command -nargs=1 Browse call dist#vim9#Open(<q-args>)
 command -nargs=1 Browse call misc#Browse(<q-args>)
 
 
@@ -294,16 +291,18 @@ set showtabline=1
 set tabline=%!tabline#Line()
 
 " keep the tabpanel disabled by default
-set showtabpanel=0
-set tabpanelopt=columns:50,vert
-set tabpanel=%!tabline#Panel()
+if v:version > 901 || (v:version == 901 && has('patch-9.1.1391'))
+  set showtabpanel=0
+  set tabpanelopt=columns:50,vert
+  set tabpanel=%!tabline#Panel()
 
-" enable, disable, or toggle the tabpanel
-nnoremap [op <cmd>set showtabpanel=1 <bar> echo 'set showtabpanel=1'<cr>
-nnoremap ]op <cmd>set showtabpanel=0 <bar> echo 'set showtabpanel=0'<cr>
-nnoremap <expr> yop &showtabpanel ?
-  \ "<cmd>set showtabpanel=0 <bar> echo 'set showtabpanel=0'<cr>" :
-  \ "<cmd>set showtabpanel=1 <bar> echo 'set showtabpanel=1'<cr>"
+  " enable, disable, or toggle the tabpanel
+  nnoremap [op <cmd>set showtabpanel=1 <bar> echo 'set showtabpanel=1'<cr>
+  nnoremap ]op <cmd>set showtabpanel=0 <bar> echo 'set showtabpanel=0'<cr>
+  nnoremap <expr> yop &showtabpanel ?
+    \ "<cmd>set showtabpanel=0 <bar> echo 'set showtabpanel=0'<cr>" :
+    \ "<cmd>set showtabpanel=1 <bar> echo 'set showtabpanel=1'<cr>"
+endif
 
 
 " --------------------------------------

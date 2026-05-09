@@ -1,3 +1,5 @@
+" NOTE: shellescape(file, 1) in dist#vim9#Open() escapes # to \#, which causes
+" an error in the browser command -nargs=1 Browse call dist#vim9#Open(<q-args>)
 function misc#Browse(url)
   if has('mac') || has('macunix')
     call job_start(['open', a:url])

@@ -15,7 +15,7 @@ unmap <buffer> O
 unmap <buffer> a
 unmap <buffer> A
 
-" map `gc` to toggle conceal (<nowait> overrides vim-commentary mappings)
+" map `gc` to toggle conceal (<nowait> overrides comment mappings)
 nnoremap <silent><buffer><expr><nowait> gc &cole ? '<cmd>setl cole=0<cr>' : '<cmd>setl cole=2<cr>'
 
 " map `gh` to hide dot-prefixed files

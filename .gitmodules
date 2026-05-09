@@ -5,9 +5,6 @@
 [submodule "pack/download/start/apathy"]
 	path = pack/download/start/apathy
 	url = https://github.com/tpope/vim-apathy.git
-[submodule "pack/download/start/commentary"]
-	path = pack/download/start/commentary
-	url = https://github.com/tpope/vim-commentary.git
 [submodule "pack/download/start/dirvish"]
 	path = pack/download/start/dirvish
 	url = https://github.com/justinmk/vim-dirvish.git
