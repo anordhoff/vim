@@ -16,6 +16,13 @@ function misc#Clear(chars)
     \ "'. Execute :wviminfo! to persist changes"
 endfunction
 
+function misc#DiffGet(target)
+  set diffopt-=linematch:60
+  let filepath = fnamemodify(expand('%'), ':.')
+  exec 'diffget //' .. a:target .. '/' .. filepath
+  set diffopt+=linematch:60
+endfunction
+
 function misc#Grep(...)
   let output = system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
   if v:shell_error
@@ -33,6 +40,7 @@ function misc#Preview(...)
   endif
   exec 'Start! grip -b ' .. file
 endfunction
+
 function misc#RestoreCursor()
   if &ft =~# 'commit\|rebase'
     return

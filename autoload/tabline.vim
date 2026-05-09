@@ -40,7 +40,7 @@ function tabline#Label(n)
   elseif filetype == 'dirvish'
     let name = 'dirvish'
   elseif bufname =~ '^fugitive://'
-    let name = 'fugitive://' .. fnamemodify(FugitiveReal(bufname), ':.')
+    let name = 'fugitive://' .. fnamemodify(FugitiveReal(bufname), ':~:.')
   else
     let name = fnamemodify(bufname, ':~:.')
   endif
@@ -52,14 +52,28 @@ function tabline#Panel() abort
   let buflist = tabpagebuflist(curr)
   let winnr = tabpagewinnr(curr)
   let bufname = bufname(buflist[winnr - 1])
-  let name = pathshorten(fnamemodify(bufname, ':~:.'))
   let prefix = printf('%2d ', curr)
 
+  if bufname =~ '^fugitive://'
+    let name = fnamemodify(FugitiveReal(bufname), ':~:.')
+  else
+    let name = fnamemodify(bufname, ':~:.')
+  endif
+
+  " get the width of the tab panel (excluding the vertical separator)
+  let width = str2nr(matchstr(&tabpanelopt, 'columns:\zs\d\+')) - 1
+
+  " if necessary, shorten directory names in the path
+  let len = 10
+  while strchars(prefix .. name) > width && len > 0
+    let name = pathshorten(name, len)
+    let len -= 1
+  endwhile
+
   " if necessary, trim the beginning of the filename
-  let width = str2nr(matchstr(&tabpanelopt, 'columns:\zs\d\+'))
   if strchars(prefix .. name) >= width
-    let taillen = width - strchars(prefix) - 2
-    let name = '<' .. strcharpart(name, strchars(name) - taillen)
+    let len = width - strchars(prefix) - 1
+    let name = '<' .. strcharpart(name, strchars(name) - len)
   endif
   return '%#LineNr#' .. prefix .. '%*' .. name
 endfunction

@@ -2,8 +2,6 @@
 " settings
 " --------------------------------------
 
-" TODO: should I use fuzzyy/fuzzbox instead of implementing my own fuzzy search (https://github.com/vim-fuzzbox/fuzzbox.vim)
-
 set notermguicolors     " disable 24-bit colors
 set t_Co=16             " use the 16 color palette
 set number              " enable line numbers
@@ -88,7 +86,7 @@ set breakindent
 let &showbreak=' .. '
 
 " improve readability of diffs
-set diffopt+=vertical,hiddenoff,algorithm:histogram,indent-heuristic
+set diffopt+=vertical,hiddenoff,algorithm:histogram,indent-heuristic,linematch:60
 
 " show possible autocompletions in a pmenu
 set completeopt=menuone,noselect,preview
@@ -104,11 +102,6 @@ set wildignore+=tags,*.tags,.git/**,**/bin/**,**/vendor/**,**/node_modules/**,**
 
 " ignore files and directories listed in .gitignore
 let &wildignore ..= gitignore#WildignoreList('.gitignore')
-
-" use the fuzzy-file-picker function
-if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
-  set findfunc=fuzzy#Find
-endif
 
 " use ripgrep as the external grep program if available
 if executable('rg')
@@ -169,16 +162,6 @@ augroup cursor
   autocmd BufReadPost * call misc#RestoreCursor()
 augroup END
 
-" enable fuzzy autocompletion when using :find
-if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
-  augroup fuzzy
-    autocmd CmdlineEnter [\:] let g:filescache = []
-    autocmd CmdlineLeave [\:] set wildmode=longest:full,full
-    autocmd CmdlineChanged [\:] call fuzzy#CmdlineChanged()
-    autocmd CmdlineLeavePre [\:] call fuzzy#CmdlineLeavePre()
-  augroup END
-endif
-
 
 " --------------------------------------
 " mappings
@@ -209,9 +192,16 @@ nnoremap <leader>b :ls<cr>:b<space>
 
 " file navigation
 if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
+  set findfunc=fuzzy#Find
   nnoremap <leader>f :find<space>
   nnoremap <leader>s :sfind<space>
   nnoremap <leader>v :vert sfind<space>
+  augroup fuzzy
+    autocmd CmdlineEnter [\:] let g:filescache = []
+    autocmd CmdlineLeave [\:] set wildmode=longest:full,full
+    autocmd CmdlineChanged [\:] call fuzzy#CmdlineChanged()
+    autocmd CmdlineLeavePre [\:] call fuzzy#CmdlineLeavePre()
+  augroup END
 else
   nnoremap <leader>f :fin **/*
   nnoremap <leader>s :sf **/*
@@ -235,8 +225,8 @@ nnoremap <silent> <m-q> <cmd>call quickfix#ToggleQuickfixlist()<cr>
 nnoremap <silent> <m-l> <cmd>call quickfix#ToggleLocationlist()<cr>
 
 " get change from local or remote buffer when using mergetool
-nnoremap gh <cmd>set diffopt-=linematch:40<bar>diffget //2<bar>set diffopt+=linematch:40<bar>diffupdate<cr>
-nnoremap gl <cmd>set diffopt-=linematch:40<bar>diffget //3<bar>set diffopt+=linematch:40<bar>diffupdate<cr>
+nnoremap gh <cmd>call misc#DiffGet(2)<cr>
+nnoremap gl <cmd>call misc#DiffGet(3)<cr>
 
 " copy the absolute path of the current file to the unnamed register
 nnoremap <leader>y <cmd>let @" = expand("%:p")<cr>
@@ -244,19 +234,19 @@ nnoremap <leader>y <cmd>let @" = expand("%:p")<cr>
 " scrolling with the mouse or trackpad moves the screen instead of the cursor
 noremap <scrollwheelup> <c-y>
 noremap <scrollwheeldown> <c-e>
-noremap <scrollwheelleft> <nop>
-noremap <scrollwheelright> <nop>
 
 " disable other mouse actions
+noremap <scrollwheelleft> <nop>
+noremap <scrollwheelright> <nop>
 noremap <leftmouse> <nop>
-noremap <rightmouse> <nop>
 noremap <middlemouse> <nop>
+noremap <rightmouse> <nop>
 noremap <2-leftmouse> <nop>
 noremap <3-leftmouse> <nop>
 noremap <4-leftmouse> <nop>
 inoremap <leftmouse> <nop>
-inoremap <rightmouse> <nop>
 inoremap <middlemouse> <nop>
+inoremap <rightmouse> <nop>
 
 
 " --------------------------------------
@@ -305,7 +295,7 @@ set tabline=%!tabline#Line()
 
 " keep the tabpanel disabled by default
 set showtabpanel=0
-set tabpanelopt=columns:30,vert
+set tabpanelopt=columns:50,vert
 set tabpanel=%!tabline#Panel()
 
 " enable, disable, or toggle the tabpanel

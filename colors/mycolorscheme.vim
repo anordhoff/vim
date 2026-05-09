@@ -74,7 +74,7 @@ hi Folded                        cterm=none        ctermfg=3        ctermbg=none
 hi VertSplit                     cterm=none        ctermfg=20       ctermbg=none
 hi TabLine                       cterm=none        ctermfg=7        ctermbg=18
 hi TabLineFill                   cterm=none        ctermfg=none     ctermbg=18
-hi TabLineSel                    cterm=none        ctermfg=6        ctermbg=18
+hi TabLineSel                    cterm=none        ctermfg=5        ctermbg=18
 hi TabPanel                      cterm=none        ctermfg=none     ctermbg=none
 hi TabPanelFill                  cterm=none        ctermfg=none     ctermbg=none
 hi TabPanelSel                   cterm=none        ctermfg=none     ctermbg=23
