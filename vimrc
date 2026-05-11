@@ -36,7 +36,9 @@ set packpath+=~/jobfiles/vim/after
 " load internal plugins
 if &loadplugins
   packadd cfilter
-  packadd comment
+  if v:version > 901 || (v:version == 901 && has('patch-9.1.0375'))
+    packadd comment
+  endif
 endif
 
 " disable netrw in favor of vim-dirvish
