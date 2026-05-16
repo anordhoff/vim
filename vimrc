@@ -188,10 +188,13 @@ xnoremap <expr> # misc#Search(0)
 " clear search highlighting
 nnoremap <silent> <c-l> <cmd>nohlsearch<cr>
 
-" buffer navigation
+" file and buffer navigation
+nnoremap <leader>f :fin **/*
+nnoremap <leader>s :sf **/*
+nnoremap <leader>v :vert sf **/*
 nnoremap <leader>b :ls<cr>:b<space>
 
-" file navigation
+" fuzzy file navigation
 if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
   set findfunc=fuzzy#Find
   nnoremap <leader>f :find<space>
@@ -203,10 +206,6 @@ if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
     autocmd CmdlineChanged [\:] call fuzzy#CmdlineChanged()
     autocmd CmdlineLeavePre [\:] call fuzzy#CmdlineLeavePre()
   augroup END
-else
-  nnoremap <leader>f :fin **/*
-  nnoremap <leader>s :sf **/*
-  nnoremap <leader>v :vert sf **/*
 endif
 
 " jump to the definition in the tag file

@@ -18,7 +18,7 @@ endfunction
 " enable fuzzy wildmode when using :find, :sfind, and :vert sfind
 function fuzzy#CmdlineChanged()
   let cmd = getcmdline()
-  if cmd =~# '^\s*\%(vert \)\?s\?fin\%[d]\s'
+  if cmd =~# '^\s*\%(vert \)\?s\?find\s'
     if &wildmode != 'noselect:lastused,full'
       set wildmode=noselect:lastused,full
     endif
@@ -30,11 +30,11 @@ endfunction
 function fuzzy#CmdlineLeavePre()
   if get(cmdcomplete_info(), 'matches', []) != []
     let info = cmdcomplete_info()
-    if getcmdline() =~# '^\s*fin\%[d]\s' && info.selected == -1
+    if getcmdline() =~# '^\s*find\s' && info.selected == -1
       call setcmdline('find ' .. info.matches[0])
-    elseif getcmdline() =~# '^\s*sfin\%[d]\s' && info.selected == -1
+    elseif getcmdline() =~# '^\s*sfind\s' && info.selected == -1
       call setcmdline('sfind ' .. info.matches[0])
-    elseif getcmdline() =~# '^\s*vert sfin\%[d]\s' && info.selected == -1
+    elseif getcmdline() =~# '^\s*vert sfind\s' && info.selected == -1
       call setcmdline('vert sfind ' .. info.matches[0])
     endif
   endif
