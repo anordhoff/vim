@@ -3,7 +3,7 @@ let test#go#gotest#options = '-fullpath -coverprofile=coverage.out'
 let g:test#runner_commands = ['GoTest', 'Delve']
 
 " transformation that enables verbose logging for delve
-function s:DelveTransformVerbose(cmd) abort
+function s:DelveTransformVerbose(cmd)
   if a:cmd =~ '--'
     return a:cmd .. ' -test.v'
   else

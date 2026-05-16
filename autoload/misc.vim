@@ -51,7 +51,7 @@ function misc#RestoreCursor()
   endif
 endfunction
 
-function misc#Search(forward) abort
+function misc#Search(forward)
   let chunks = getregion(getpos('.'), getpos('v'), #{type: mode()})
   call map(chunks, {_, v -> escape(v, '\')})
   let pat = '\V' .. join(chunks, '\n')

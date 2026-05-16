@@ -2,6 +2,8 @@
 " settings
 " --------------------------------------
 
+" TODO: replace notebook keymaps with commands
+
 set notermguicolors     " disable 24-bit colors
 set t_Co=16             " use the 16 color palette
 set number              " enable line numbers
@@ -48,28 +50,9 @@ let g:loaded_netrwPlugin = 1
 " enable filetype detection and loading of plugin and indent files
 filetype plugin indent on
 
-" enable syntax highilighting and load a custom colorscheme
+" enable syntax highlighting and load a custom colorscheme
 syntax enable
 colorscheme mycolorscheme
-
-" set the cursor shape to a bar in insert mode
-let &t_SI = "\e[6 q"
-let &t_EI = "\e[2 q"
-
-" enable meta keymaps with modifyOtherKeys level 2
-let &t_TI = "\e[>4;2m"
-let &t_TE = "\e[>4;m"
-
-" enable focus-event tracking
-let &t_fe = "\e[?1004h"
-let &t_fd = "\e[?1004l"
-
-" enable undercurl support with cterm
-let &t_Ce = "\e[4:0m"
-let &t_Cs = "\e[4:3m"
-
-" enable undercurl highlighting with ctermul
-let &t_AU = "\e[58;5;%dm"
 
 " show search count; don't print ins-complete-menu messages or file info
 set shortmess-=S
@@ -130,6 +113,25 @@ else
       \ .. " --exclude-dir=node_modules"
 endif
 
+" set the cursor shape to a bar in insert mode
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+
+" enable meta keymaps with modifyOtherKeys level 2
+let &t_TI = "\e[>4;2m"
+let &t_TE = "\e[>4;m"
+
+" enable focus-event tracking
+let &t_fe = "\e[?1004h"
+let &t_fd = "\e[?1004l"
+
+" enable undercurl support with cterm
+let &t_Cs = "\e[4:3m"
+let &t_Ce = "\e[4:0m"
+
+" enable undercurl highlighting with ctermul
+let &t_AU = "\e[58;5;%dm"
+
 
 " --------------------------------------
 " augroups
@@ -137,7 +139,7 @@ endif
 
 " open the quickfix or location list automatically when grepping
 augroup quickfix
-  autocmd QuickFixCmdPost vimgrep,cgetexpr cwindow | wincmd p
+  autocmd QuickFixCmdPost vimgrep,cgetexpr botright cwindow | wincmd p
   autocmd QuickFixCmdPost lvimgrep,lgetexpr lwindow | wincmd p
 augroup END
 
@@ -151,16 +153,16 @@ augroup completion
   autocmd CompleteDone * pclose | setlocal completeopt=menuone,noselect,preview
 augroup END
 
+" restore cursor to previous location when opening a file
+augroup cursor
+  autocmd BufReadPost * call misc#RestoreCursor()
+augroup END
+
 " enable the cursorline on the active window
 augroup cursorline
   autocmd BufEnter,WinEnter * if !&diff | setlocal cursorline | endif
   autocmd WinLeave * setlocal nocursorline
   autocmd OptionSet diff if v:option_new | setlocal nocursorline | else | setlocal cursorline | endif
-augroup END
-
-" restore cursor to previous location when opening a file
-augroup cursor
-  autocmd BufReadPost * call misc#RestoreCursor()
 augroup END
 
 
@@ -181,7 +183,7 @@ cnoremap <expr> <down> wildmenumode() ? "\<c-e>\<down>" : "\<down>"
 cnoremap <expr> <c-p>  wildmenumode() ? "\<c-e>\<up>"   : "\<up>"
 cnoremap <expr> <c-n>  wildmenumode() ? "\<c-e>\<down>" : "\<down>"
 
-" search for the visually selected text
+" search for visually selected text
 xnoremap <expr> * misc#Search(1)
 xnoremap <expr> # misc#Search(0)
 
@@ -208,7 +210,7 @@ if v:version > 901 || (v:version == 901 && has('patch-9.1.1576'))
   augroup END
 endif
 
-" jump to the definition in the tag file
+" jump to definition from the tag file
 nnoremap gd <c-]>
 
 " trigger tag/omni completion using <tab>
@@ -217,12 +219,6 @@ inoremap <expr> <s-tab> completion#TabComplete(1)
 
 " maximize the current window in a new tab
 nnoremap <silent> <leader>z <cmd>tabnew %<cr><c-o>
-
-" toggle the quickfix list window and maximize window to the width of vim
-nnoremap <silent> <m-q> <cmd>call quickfix#ToggleQuickfixlist()<cr>
-
-" toggle the location list window
-nnoremap <silent> <m-l> <cmd>call quickfix#ToggleLocationlist()<cr>
 
 " get change from local or remote buffer when using mergetool
 nnoremap gh <cmd>call misc#DiffGet(2)<cr>
@@ -291,7 +287,7 @@ augroup END
 set showtabline=1
 set tabline=%!tabline#Line()
 
-" keep the tabpanel disabled by default
+" disable the tabpanel by default
 if v:version > 901 || (v:version == 901 && has('patch-9.1.1391'))
   set showtabpanel=0
   set tabpanelopt=columns:50,vert
@@ -320,7 +316,7 @@ nnoremap <silent> <m-t> <cmd>call notebook#Todo(g:todofile)<cr>
 
 " prevent notebook pages from being added to the buffer list
 augroup notebook
-  autocmd BufNewFile,BufRead ~/notebook/**/*.txt,~/notebook/**/*.md setlocal nobuflisted
+  autocmd BufNewFile,BufRead ~/notebook/**,~/notebook/** setlocal nobuflisted
 augroup END
 
 
