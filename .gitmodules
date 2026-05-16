@@ -61,9 +61,6 @@
 	url = https://github.com/tpope/vim-unimpaired.git
 
 # opt
-[submodule "pack/download/opt/copilot"]
-	path = pack/download/opt/copilot
-	url = https://github.com/github/copilot.vim.git
 [submodule "pack/download/opt/lsp"]
 	path = pack/download/opt/lsp
 	url = https://github.com/yegappan/lsp.git

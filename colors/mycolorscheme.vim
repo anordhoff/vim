@@ -248,15 +248,6 @@ hi yamlBlockMappingKey           cterm=none        ctermfg=6        ctermbg=none
 " ----------------------------------------------------------
 
 " --------------------------------------
-" copilot
-" --------------------------------------
-hi CopilotSuggestion             cterm=none        ctermfg=20       ctermbg=none
-hi CopilotChatSelection          cterm=none        ctermfg=none     ctermbg=23
-hi CopilotChatHeader             cterm=none        ctermfg=5        ctermbg=none
-hi CopilotChatSeparator          cterm=none        ctermfg=5        ctermbg=none
-hi CopilotChatHelp               cterm=none        ctermfg=8        ctermbg=none
-
-" --------------------------------------
 " dirvish
 " --------------------------------------
 hi DirvishPathTail               cterm=none        ctermfg=4        ctermbg=none
